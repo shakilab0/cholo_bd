@@ -25,6 +25,13 @@ class HomePageController extends GetxController {
   final RxList<String> recentSearches = <String>[].obs;
   final RxList<DistrictModel> filteredDistricts = <DistrictModel>[].obs;
 
+  List<DistrictModel> get popularDistricts {
+    if (searchQuery.value.trim().isNotEmpty) return filteredDistricts;
+    final sorted = [...districts]
+      ..sort((a, b) => b.placeCount.compareTo(a.placeCount));
+    return sorted.take(20).toList();
+  }
+
   // Season banner (derived from current month)
   String get seasonBannerText {
     final month = DateTime.now().month;
@@ -118,6 +125,10 @@ class HomePageController extends GetxController {
   void toggleLanguage() {
     MyApp.isEnglish.value = !MyApp.isEnglish.value;
     saveLanguageIsEnglish(MyApp.isEnglish.value);
+  }
+
+  void navigateToAllDistricts() {
+    Get.toNamed(AppRoutes.allDistricts);
   }
 
   void navigateToDistrictPlaces(DistrictModel district) {

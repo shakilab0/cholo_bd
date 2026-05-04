@@ -15,6 +15,7 @@ class HomepageRemoteDataSource {
       final result = await _provider.databases.listDocuments(
         databaseId: AppWriteConstants.databaseId,
         collectionId: AppWriteConstants.districtsCollection,
+        queries: [Query.limit(100)],
       );
       return result.documents
           .map((doc) => DistrictModel.fromMap(doc.data))

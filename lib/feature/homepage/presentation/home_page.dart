@@ -29,7 +29,7 @@ class HomePage extends GetView<HomePageController> {
             color: AppColor.primary,
             backgroundColor: AppColor.bgCard,
             onRefresh: () async {
-              // Pull to refresh: reload data
+
             },
             child: ListView(
               padding: EdgeInsets.zero,
@@ -42,6 +42,7 @@ class HomePage extends GetView<HomePageController> {
                   title: AppStrings.featuredPlaces,
                   onSeeAll: () {},
                 ),
+
                 Obx(() => controller.isLoadingFeatured.value
                     ? _shimmerSlider()
                     : controller.featuredPlaces.isEmpty
@@ -58,20 +59,20 @@ class HomePage extends GetView<HomePageController> {
                   title: 'Quick Actions',
                   showSeeAll: false,
                 ),
-                QuickActionsRow(controller: controller),
 
-                const SizedBox(height: 16),
+                QuickActionsRow(controller: controller),
 
                 // Explore Districts
                 _SectionHeader(
                   title: AppStrings.exploreDistricts,
-                  onSeeAll: () {},
+                  onSeeAll: controller.navigateToAllDistricts,
                 ),
+                const SizedBox(height: 8),
                 Obx(() {
                   if (controller.isLoadingDistricts.value) {
                     return _shimmerGrid();
                   }
-                  final list = controller.filteredDistricts;
+                  final list = controller.popularDistricts;
                   if (list.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(32),
@@ -85,8 +86,7 @@ class HomePage extends GetView<HomePageController> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
@@ -223,7 +223,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

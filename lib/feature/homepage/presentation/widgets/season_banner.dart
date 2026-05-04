@@ -23,13 +23,11 @@ class SeasonBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(controller.seasonIcon, color: AppColor.primary, size: 20),
+          Icon(controller.seasonIcon, color: Colors.white, size: 20),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              controller.seasonBannerText,
-              style: AppTextStyle.labelSmall
-                  .copyWith(color: AppColor.textPrimary),
+            child: Text( controller.seasonBannerText,
+              style: AppTextStyle.labelSmall.copyWith(color: Colors.white),
               maxLines: 2,
             ),
           ),

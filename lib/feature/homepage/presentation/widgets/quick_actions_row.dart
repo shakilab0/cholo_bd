@@ -33,12 +33,12 @@ class QuickActionsRow extends StatelessWidget {
     ];
 
     return SizedBox(
-      height: 80,
+      height: 40,
       child: ListView.separated(
+        padding: const EdgeInsets.only(left: 12),
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: actions.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (_, i) => _QuickActionChip(action: actions[i]),
       ),
     );
@@ -49,8 +49,7 @@ class _QuickAction {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _QuickAction(
-      {required this.icon, required this.label, required this.onTap});
+  const _QuickAction({required this.icon, required this.label, required this.onTap});
 }
 
 class _QuickActionChip extends StatelessWidget {
@@ -62,10 +61,10 @@ class _QuickActionChip extends StatelessWidget {
     return GestureDetector(
       onTap: action.onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: AppColor.bgCard,
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(28),
           border: Border.all(color: AppColor.border),
         ),
         child: Row(
@@ -74,8 +73,7 @@ class _QuickActionChip extends StatelessWidget {
             Icon(action.icon, color: AppColor.primary, size: 18),
             const SizedBox(width: 6),
             Text(action.label,
-                style: AppTextStyle.labelSmall
-                    .copyWith(color: AppColor.textPrimary)),
+                style: AppTextStyle.labelSmall.copyWith(color: AppColor.textPrimary)),
           ],
         ),
       ),

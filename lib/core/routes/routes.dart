@@ -24,6 +24,7 @@ import 'package:cholo_bd/feature/map/map_page.dart';
 import 'package:cholo_bd/feature/map/map_binding.dart';
 import 'package:cholo_bd/feature/active_trip/active_trip_page.dart';
 import 'package:cholo_bd/feature/active_trip/active_trip_binding.dart';
+import 'package:cholo_bd/feature/all_districts/all_districts_page.dart';
 
 final List<GetPage> appRoutes = [
   GetPage(name: AppRoutes.splash, page: () => const SplashScreen()),
@@ -87,6 +88,10 @@ final List<GetPage> appRoutes = [
     page: () => const ActiveTripPage(),
     binding: ActiveTripBinding(),
   ),
+  GetPage(
+    name: AppRoutes.allDistricts,
+    page: () => const AllDistrictsPage(),
+  ),
 ];
 
 class AppRoutes {
@@ -104,4 +109,5 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String map = '/map';
   static const String activeTrip = '/active-trip';
+  static const String allDistricts = '/all-districts';
 }

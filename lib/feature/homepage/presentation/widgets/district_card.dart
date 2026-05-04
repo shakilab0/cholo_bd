@@ -65,35 +65,37 @@ class DistrictCard extends StatelessWidget {
               ),
               // Text content
               Positioned(
-                left: 12,
-                right: 12,
-                bottom: 12,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() => Text(
-                          MyApp.isEnglish.value
-                              ? district.name
-                              : district.nameBn,
-                          style: AppTextStyle.sectionTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: AppColor.primary.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(20),
+                left: 8,
+                bottom: 8,
+                child: Obx(() => Container(
+                  padding: const EdgeInsets.symmetric( horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColor.primary.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                        MyApp.isEnglish.value
+                            ? district.name
+                            : district.nameBn,
+                    style: TextStyle(fontSize: 14,color: AppColor.textPrimary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      child: Text(
-                        '${district.placeCount} places',
-                        style: AppTextStyle.caption
-                            .copyWith(color: AppColor.inkDark),
-                      ),
-                    ),
-                  ],
+                )),
+              ),
+              Positioned(
+                left: 6,
+                top: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColor.primary.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text( '${district.placeCount} places',
+                    style: AppTextStyle.caption
+                        .copyWith(color: AppColor.inkDark),
+                  ),
                 ),
               ),
             ],
