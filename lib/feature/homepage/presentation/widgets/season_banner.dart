@@ -13,21 +13,22 @@ class SeasonBanner extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        color: AppColor.primary.withValues(alpha: 0.3),
+       /* gradient: const LinearGradient(
           colors: [Color(0xFF004D40), Color(0xFF00695C)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-        ),
+        ),*/
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColor.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(controller.seasonIcon, color: Colors.white, size: 20),
+          Icon(controller.seasonIcon, color: AppColor.textPrimary, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text( controller.seasonBannerText,
-              style: AppTextStyle.labelSmall.copyWith(color: Colors.white),
+              style: AppTextStyle.labelSmall.copyWith(color: AppColor.textPrimary),
               maxLines: 2,
             ),
           ),

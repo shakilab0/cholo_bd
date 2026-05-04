@@ -61,13 +61,13 @@ class HomePage extends GetView<HomePageController> {
                 ),
 
                 QuickActionsRow(controller: controller),
-
+                const SizedBox(height: 10),
                 // Explore Districts
                 _SectionHeader(
                   title: AppStrings.exploreDistricts,
                   onSeeAll: controller.navigateToAllDistricts,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Obx(() {
                   if (controller.isLoadingDistricts.value) {
                     return _shimmerGrid();
@@ -88,15 +88,39 @@ class HomePage extends GetView<HomePageController> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 1.1,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      childAspectRatio: 0.93,
                     ),
                     itemCount: list.length,
-                    itemBuilder: (_, i) => DistrictCard(
-                      district: list[i],
-                      onTap: () =>
-                          controller.navigateToDistrictPlaces(list[i]),
+                    itemBuilder: (_, i) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: DistrictCard(
+                            district: list[i],
+                            onTap: () =>
+                                controller.navigateToDistrictPlaces(list[i]),
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+                        Obx(() => Container(
+                          decoration: BoxDecoration(
+                            //color: AppColor.primary.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            MyApp.isEnglish.value
+                                ? list[i].name
+                                : list[i].nameBn,
+                            style: TextStyle(fontSize: 16,color: AppColor.textPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )),
+                        const SizedBox(height: 10),
+                      ],
                     ),
                   );
                 }),

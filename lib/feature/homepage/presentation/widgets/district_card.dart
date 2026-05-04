@@ -20,7 +20,7 @@ class DistrictCard extends StatelessWidget {
       child: Hero(
         tag: 'district_${district.id}',
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           child: Stack(
             children: [
               // Cover image
@@ -63,33 +63,14 @@ class DistrictCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Text content
+
               Positioned(
-                left: 8,
-                bottom: 8,
-                child: Obx(() => Container(
-                  padding: const EdgeInsets.symmetric( horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColor.primary.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                        MyApp.isEnglish.value
-                            ? district.name
-                            : district.nameBn,
-                    style: TextStyle(fontSize: 14,color: AppColor.textPrimary),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                )),
-              ),
-              Positioned(
-                left: 6,
+                right: 6,
                 top: 10,
                 child: Container(
                   padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColor.primary.withValues(alpha: 0.9),
+                    color: AppColor.primary.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text( '${district.placeCount} places',

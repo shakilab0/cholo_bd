@@ -1,3 +1,4 @@
+import 'package:cholo_bd/app/my_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -54,7 +55,7 @@ class _AllDistrictsPageState extends State<AllDistrictsPage> {
           onPressed: () => Get.back(),
         ),
         title: Text('Bangladesh', style: AppTextStyle.heading3),
-        centerTitle: true,
+        centerTitle: false,
       ),
       body: Column(
         children: [
@@ -116,21 +117,43 @@ class _AllDistrictsPageState extends State<AllDistrictsPage> {
                 );
               }
               return GridView.builder(
-                padding:
-                    const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.1,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 0.93,
                 ),
                 itemCount: list.length,
-                itemBuilder: (_, i) => DistrictCard(
-                  district: list[i],
-                  onTap: () =>
-                      _homeCtrl.navigateToDistrictPlaces(list[i]),
+                itemBuilder: (_, i) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: DistrictCard(
+                        district: list[i],
+                        onTap: () => _homeCtrl.navigateToDistrictPlaces(list[i]),
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+                    Obx(() => Container(
+                      decoration: BoxDecoration(
+                        //color: AppColor.primary.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        MyApp.isEnglish.value
+                            ? list[i].name
+                            : list[i].nameBn,
+                        style: TextStyle(fontSize: 16,color: AppColor.textPrimary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )),
+                    const SizedBox(height: 10),
+                  ],
                 ),
+
               );
             }),
           ),
