@@ -33,10 +33,12 @@ class MyApp extends StatelessWidget {
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarColor: Colors.white,
+            systemNavigationBarIconBrightness: Brightness.dark,
           ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: AppColor.bgDark,
+          backgroundColor: Colors.white,
           elevation: 0,
           selectedItemColor: AppColor.primary,
           unselectedItemColor: AppColor.textSecondary,
