@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dart_appwrite/dart_appwrite.dart';
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
@@ -5,10 +7,7 @@ const _endpoint = 'https://sgp.cloud.appwrite.io/v1';
 const _projectId = '69ec2d6c00274656ee64';
 const _databaseId = '69ec314b0038beeb4258';
 const _collectionId = 'districts';
-
-// Paste your Appwrite API key here (needs databases.write permission)
-const _apiKey =
-    'standard_95427bc5f0c9b8d7fb86df043d63a037b990d0736c1c8d08d27376bda4e30ec584ee823670b550aeba8326700744ec6eb0de26c0e971ddf0efd89d3787c263442f2b9d88f08baeb75d750862ef0b0cccb01b323bb9204f4236cfdfec8cdeb10709cfe961447ef637c22ad3ccf3091a2e7b64c723e9652c850b7e787a5adbcfea';
+// Set APPWRITE_API_KEY (databases read + write) before running.
 // ─────────────────────────────────────────────────────────────────────────────
 
 final _districts = [
@@ -738,4 +737,9 @@ final _districts = [
 //   print('Done. ✅ $success uploaded   ❌ $failed failed');
 // }
 
-void main() => print('Districts already uploaded. Uncomment main() to re-run.');
+void main() {
+  print('Districts already uploaded.');
+  print('Uncomment the upload main() block and run with:');
+  print("  export APPWRITE_API_KEY='your_key'");
+  print('  dart run upload_districts.dart');
+}

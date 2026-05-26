@@ -1,9 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/feature/place_details/place_details_controller.dart';
+import 'package:cholo_bd/feature/place_details/widgets/place_media_sections.dart';
 
 class PlaceDetailsPage extends StatelessWidget {
   const PlaceDetailsPage({super.key});
@@ -58,14 +58,10 @@ class PlaceDetailsPage extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: 'place_${place.id}',
-                child: place.images.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: place.images.first,
-                        fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) =>
-                            Container(color: AppColor.bgCard),
-                      )
-                    : Container(color: AppColor.bgCard),
+                child: PlaceDetailsImageCarousel(
+                  place: place,
+                  controller: controller,
+                ),
               ),
             ),
           ),
@@ -112,29 +108,46 @@ class PlaceDetailsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: place.tags
-                        .map((tag) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: AppColor.primary.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: AppColor.primary.withValues(alpha: 0.3)),
+                  if (place.tags.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 34,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: place.tags.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (_, index) {
+                          final tag = place.tags[index];
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColor.primary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color:
+                                      AppColor.primary.withValues(alpha: 0.3)),
+                            ),
+                            child: Text(
+                              tag,
+                              style: AppTextStyle.labelSmall.copyWith(
+                                color: AppColor.primary,
                               ),
-                              child: Text(tag,
-                                  style: AppTextStyle.labelSmall.copyWith(
-                                      color: AppColor.primary)),
-                            ))
-                        .toList(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Container(
+                    color: Colors.transparent,
+                    child: _InfoGrid(place: place),
                   ),
+                  
                   const SizedBox(height: 20),
-                  _InfoGrid(place: place),
-                  const SizedBox(height: 20),
+                  PlacePhotosSection(place: place),
+                  PlaceVideosSection(place: place),
                   Text('About', style: AppTextStyle.sectionTitle),
                   const SizedBox(height: 8),
                   Text(place.description,
@@ -179,6 +192,7 @@ class _InfoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
+      padding: EdgeInsets.zero,
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

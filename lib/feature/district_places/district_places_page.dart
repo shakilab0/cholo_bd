@@ -57,8 +57,8 @@ class _DistrictHeroAppBar extends StatelessWidget {
         ),
       ),
       flexibleSpace: FlexibleSpaceBar(
-        title: Text(district.name, style: AppTextStyle.sectionTitle),
-        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
+        title: Text(district.name, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
+        titlePadding: const EdgeInsets.only(left: 30, bottom: 16),
         background: Hero(
           tag: 'district_${district.id}',
           child: Stack(
@@ -167,6 +167,15 @@ class _PlacesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      if (controller.isLoadingPlaces.value) {
+        return const Padding(
+          padding: EdgeInsets.all(48),
+          child: Center(
+            child: CircularProgressIndicator(color: AppColor.primary),
+          ),
+        );
+      }
+
       final places = controller.filteredPlaces;
       if (places.isEmpty) {
         return const Padding(
