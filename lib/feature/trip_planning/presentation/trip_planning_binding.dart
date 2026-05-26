@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:cholo_bd/core/di/homepage_dependencies.dart';
 import 'package:cholo_bd/feature/trip_planning/data/repositoryImpl/trip_repository_impl.dart';
 import 'package:cholo_bd/feature/trip_planning/domain/useCase/create_trip_use_case.dart';
 import 'package:cholo_bd/feature/trip_planning/presentation/trip_planning_controller.dart';
@@ -6,10 +7,14 @@ import 'package:cholo_bd/feature/trip_planning/presentation/trip_planning_contro
 class TripPlanningBinding extends Bindings {
   @override
   void dependencies() {
+    registerHomepageDependencies();
     Get.lazyPut<TripRepositoryImpl>(() => TripRepositoryImpl());
     Get.lazyPut<CreateTripUseCase>(
         () => CreateTripUseCase(Get.find<TripRepositoryImpl>()));
-    Get.lazyPut<TripPlanningController>(
-        () => TripPlanningController(Get.find()));
+    Get.lazyPut<TripPlanningController>(() => TripPlanningController(
+          Get.find<CreateTripUseCase>(),
+          Get.find(),
+          Get.find(),
+        ));
   }
 }

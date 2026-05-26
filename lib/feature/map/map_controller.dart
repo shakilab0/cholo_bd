@@ -2,19 +2,34 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
+import 'package:cholo_bd/feature/homepage/domain/useCase/get_map_places_use_case.dart';
 
 class PlacesMapController extends GetxController {
+  PlacesMapController(this._getMapPlacesUseCase);
+
+  final GetMapPlacesUseCase _getMapPlacesUseCase;
+
   final RxList<PlaceModel> places = <PlaceModel>[].obs;
   final Rx<PlaceModel?> selectedPlace = Rx<PlaceModel?>(null);
   final RxString activeFilter = 'all'.obs;
+  final RxBool isLoading = true.obs;
 
-  // Bangladesh center
   static const LatLng bangladeshCenter = LatLng(23.6850, 90.3563);
 
   @override
   void onInit() {
     super.onInit();
-    places.assignAll(seedPlaces);
+    loadPlaces();
+  }
+
+  Future<void> loadPlaces() async {
+    isLoading.value = true;
+    final result = await _getMapPlacesUseCase.execute();
+    result.fold(
+      (_) {},
+      (data) => places.assignAll(data),
+    );
+    isLoading.value = false;
   }
 
   List<PlaceModel> get filteredPlaces {

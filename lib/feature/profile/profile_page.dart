@@ -68,14 +68,10 @@ class _ProfileHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(controller.displayName, style: AppTextStyle.heading3),
+              Obx(() => Text(controller.displayName.value,
+                  style: AppTextStyle.heading3)),
               const SizedBox(height: 2),
-              Obx(() => Text(
-                    controller.isGuest
-                        ? 'Guest Explorer'
-                        : 'Smart Traveler',
-                    style: AppTextStyle.bodySmall,
-                  )),
+              Text(controller.displaySubtitle, style: AppTextStyle.bodySmall),
             ],
           ),
         ),

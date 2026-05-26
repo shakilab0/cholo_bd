@@ -37,6 +37,17 @@ class HomepageRepositoryImpl implements HomepageRepository {
   }
 
   @override
+  Future<Either<Failure, List<PlaceModel>>> getMapPlaces() async {
+    try {
+      final remote = await _remote.fetchMapPlaces();
+      if (remote.isNotEmpty) return Right(remote);
+      return Right(seedPlaces);
+    } catch (_) {
+      return Right(seedPlaces);
+    }
+  }
+
+  @override
   Future<Either<Failure, List<PlaceModel>>> getPlacesByDistrict(
       String districtId) async {
     try {

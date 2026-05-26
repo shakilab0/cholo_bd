@@ -57,4 +57,20 @@ class HomepageRemoteDataSource {
       return [];
     }
   }
+
+  Future<List<PlaceModel>> fetchMapPlaces() async {
+    try {
+      final result = await _provider.databases.listDocuments(
+        databaseId: AppWriteConstants.databaseId,
+        collectionId: AppWriteConstants.placesCollection,
+        queries: [Query.limit(100)],
+      );
+      return result.documents
+          .map((doc) => PlaceModel.fromMap(doc.data))
+          .toList();
+    } catch (e) {
+      log('fetchMapPlaces error: $e');
+      return [];
+    }
+  }
 }

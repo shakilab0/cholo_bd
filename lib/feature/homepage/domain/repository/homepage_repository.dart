@@ -6,6 +6,7 @@ import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 abstract class HomepageRepository {
   Future<Either<Failure, List<DistrictModel>>> getDistricts();
   Future<Either<Failure, List<PlaceModel>>> getFeaturedPlaces();
+  Future<Either<Failure, List<PlaceModel>>> getMapPlaces();
   Future<Either<Failure, List<PlaceModel>>> getPlacesByDistrict(
       String districtId);
 }

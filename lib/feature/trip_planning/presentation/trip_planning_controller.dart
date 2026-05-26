@@ -5,17 +5,35 @@ import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/core/services/notification_service.dart';
 import 'package:cholo_bd/feature/homepage/data/model/district_model.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
+import 'package:cholo_bd/feature/homepage/domain/useCase/get_districts_use_case.dart';
+import 'package:cholo_bd/feature/homepage/domain/useCase/get_places_by_district_use_case.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/transport_option_model.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/trip_model.dart';
 import 'package:cholo_bd/feature/trip_planning/domain/useCase/create_trip_use_case.dart';
 
 class TripPlanningController extends GetxController {
   final CreateTripUseCase _createTripUseCase;
-  TripPlanningController(this._createTripUseCase);
+  final GetDistrictsUseCase _getDistrictsUseCase;
+  final GetPlacesByDistrictUseCase _getPlacesByDistrictUseCase;
+
+  TripPlanningController(
+    this._createTripUseCase,
+    this._getDistrictsUseCase,
+    this._getPlacesByDistrictUseCase,
+  );
 
   // Steps: 0=District, 1=Places, 2=DateTime, 3=Transport, 4=Confirm
   final RxInt currentStep = 0.obs;
   static const int totalSteps = 5;
+
+  final RxList<DistrictModel> districts = <DistrictModel>[].obs;
+  final RxBool isLoadingDistricts = true.obs;
+  final RxString districtsError = ''.obs;
+
+  final RxList<PlaceModel> districtPlaces = <PlaceModel>[].obs;
+  final RxBool isLoadingPlaces = false.obs;
+  final RxString placesError = ''.obs;
+  final RxBool usedSeedPlacesFallback = false.obs;
 
   // Step 1 — District
   final Rx<DistrictModel?> selectedDistrict = Rx<DistrictModel?>(null);
@@ -48,13 +66,64 @@ class TripPlanningController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Pre-fill district if navigated from a district card
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args['district'] != null) {
       selectedDistrict.value = args['district'] as DistrictModel;
       if (currentStep.value == 0) currentStep.value = 1;
     }
     selectedTransport.value = bangladeshTransports.first;
+    _loadDistricts();
+    ever(selectedDistrict, (DistrictModel? district) {
+      if (district != null) _loadPlacesForDistrict(district.id);
+    });
+    if (selectedDistrict.value != null) {
+      _loadPlacesForDistrict(selectedDistrict.value!.id);
+    }
+  }
+
+  Future<void> _loadDistricts() async {
+    isLoadingDistricts.value = true;
+    districtsError.value = '';
+    final result = await _getDistrictsUseCase.execute();
+    result.fold(
+      (failure) => districtsError.value = failure.message,
+      (data) => districts.assignAll(data),
+    );
+    isLoadingDistricts.value = false;
+  }
+
+  Future<void> _loadPlacesForDistrict(String districtId) async {
+    isLoadingPlaces.value = true;
+    placesError.value = '';
+    usedSeedPlacesFallback.value = false;
+    districtPlaces.clear();
+
+    final result = await _getPlacesByDistrictUseCase.execute(districtId);
+    result.fold(
+      (_) {
+        placesError.value = 'Could not load places. Check your connection.';
+        _applySeedPlaces(districtId);
+      },
+      (remote) {
+        if (remote.isEmpty) {
+          usedSeedPlacesFallback.value = true;
+          _applySeedPlaces(districtId);
+        } else {
+          districtPlaces.assignAll(remote);
+        }
+      },
+    );
+    isLoadingPlaces.value = false;
+  }
+
+  void _applySeedPlaces(String districtId) {
+    final seeded =
+        seedPlaces.where((p) => p.districtId == districtId).toList();
+    if (seeded.isNotEmpty) {
+      usedSeedPlacesFallback.value = true;
+      districtPlaces.assignAll(seeded);
+      placesError.value = '';
+    }
   }
 
   void selectDistrict(DistrictModel district) {

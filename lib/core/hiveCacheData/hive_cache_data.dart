@@ -45,6 +45,18 @@ bool getIsGuestMode() {
   return Hive.box(_settingsBox).get('is_guest_mode', defaultValue: true);
 }
 
+Future<void> saveDisplayName(String name) async {
+  final box = await _openBox(_settingsBox);
+  await box.put('display_name', name);
+}
+
+String? getDisplayName() {
+  if (!Hive.isBoxOpen(_settingsBox)) return null;
+  final name = Hive.box(_settingsBox).get('display_name');
+  if (name == null || (name is String && name.trim().isEmpty)) return null;
+  return name as String;
+}
+
 // ── Districts Cache ───────────────────────────────────────────────────────────
 
 Future<void> saveDistrictsToCache(List<Map<String, dynamic>> districts) async {

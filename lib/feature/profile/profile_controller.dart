@@ -1,21 +1,64 @@
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
+import 'package:cholo_bd/dio_helper/appwrite_provider.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/trip_model.dart';
 import 'package:cholo_bd/feature/trip_planning/domain/useCase/get_trips_use_case.dart';
 
 class ProfileController extends GetxController {
   final GetTripsUseCase _getTripsUseCase;
-  ProfileController(this._getTripsUseCase);
+  final AppWriteProvider _appWrite;
+
+  ProfileController(this._getTripsUseCase, this._appWrite);
 
   final RxInt totalTrips = 0.obs;
   final RxInt placesVisited = 0.obs;
   final RxInt districtsExplored = 0.obs;
+  final RxString displayName = 'Guest Explorer'.obs;
+  final RxBool isLoadingProfile = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    _loadStats();
+    refreshData();
+  }
+
+  Future<void> refreshData() async {
+    await Future.wait([_loadProfile(), _loadStats()]);
+  }
+
+  Future<void> _loadProfile() async {
+    isLoadingProfile.value = true;
+    if (MyApp.isGuestMode.value) {
+      displayName.value = 'Guest Explorer';
+      isLoadingProfile.value = false;
+      return;
+    }
+
+    final cached = getDisplayName();
+    if (cached != null) {
+      displayName.value = cached;
+    }
+
+    try {
+      final user = await _appWrite.account.get();
+      final name = user.name.trim();
+      final email = user.email.trim();
+      if (name.isNotEmpty) {
+        displayName.value = name;
+        await saveDisplayName(name);
+      } else if (email.isNotEmpty) {
+        displayName.value = email.split('@').first;
+        await saveDisplayName(displayName.value);
+      } else if (cached == null) {
+        displayName.value = 'Traveler';
+      }
+    } catch (e) {
+      log('Profile account load: $e');
+      if (cached == null) displayName.value = 'Traveler';
+    }
+    isLoadingProfile.value = false;
   }
 
   Future<void> _loadStats() async {
@@ -40,9 +83,6 @@ class ProfileController extends GetxController {
   }
 
   bool get isGuest => MyApp.isGuestMode.value;
-
-  String get displayName =>
-      isGuest ? 'Guest Explorer' : 'Smart Traveler';
 
   String get displaySubtitle =>
       isGuest ? 'Sign in to sync your trips' : 'Bangladesh explorer';
