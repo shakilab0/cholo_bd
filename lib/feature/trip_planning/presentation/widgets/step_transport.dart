@@ -86,17 +86,9 @@ class StepTransport extends StatelessWidget {
                                       color: AppColor.textSecondary),
                                   maxLines: 1),
                               const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  _InfoPill(
-                                      icon: Icons.schedule_rounded,
-                                      text: transport.estimatedTime),
-                                  const SizedBox(width: 8),
-                                  _InfoPill(
-                                      icon: Icons.payments_rounded,
-                                      text: transport.estimatedCost),
-                                ],
-                              ),
+                              _InfoPill(
+                                  icon: Icons.schedule_rounded,
+                                  text: transport.estimatedTime),
                             ],
                           ),
                         ),

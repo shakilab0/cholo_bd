@@ -32,7 +32,7 @@ class TripRepositoryImpl implements TripRepository {
         'trip_date': trip.tripDate.millisecondsSinceEpoch,
         'created_at': trip.createdAt.millisecondsSinceEpoch,
         'status': trip.status.name,
-        'user_id': '',
+        'user_id': getUserId() ?? '',
         'notes': trip.notes ?? '',
       };
 
@@ -64,29 +64,40 @@ class TripRepositoryImpl implements TripRepository {
 
   @override
   Future<Either<Failure, List<TripModel>>> getTrips() async {
-    // Try Appwrite first
+    // Load local cache first — source of truth for offline-first trips
+    List<TripModel> localTrips = [];
     try {
+      localTrips = getTripsFromCache().map(TripModel.fromMap).toList();
+    } catch (e) {
+      log('getTrips local cache read error: $e');
+    }
+
+    // Try Appwrite and merge (remote wins for shared IDs, keep unsynced local trips)
+    try {
+      final userId = getUserId();
       final result = await _db.listDocuments(
         databaseId: AppWriteConstants.databaseId,
         collectionId: AppWriteConstants.tripsCollection,
+        queries: [
+          if (userId != null) Query.equal('user_id', userId),
+        ],
       );
-      final trips = result.documents
+      final remoteTrips = result.documents
           .map((doc) => _fromAppwriteDoc(doc.data, doc.$id))
           .toList();
-      // Sync to local cache
-      await saveTripsToCache(trips.map((t) => t.toMap()).toList());
-      return Right(trips);
+
+      final remoteIds = remoteTrips.map((t) => t.id).toSet();
+      final merged = [
+        ...remoteTrips,
+        ...localTrips.where((t) => !remoteIds.contains(t.id)),
+      ];
+      await saveTripsToCache(merged.map((t) => t.toMap()).toList());
+      return Right(merged);
     } catch (e) {
       log('getTrips Appwrite error: $e — using local cache');
     }
 
-    // Fallback to Hive
-    try {
-      final cached = getTripsFromCache();
-      return Right(cached.map(TripModel.fromMap).toList());
-    } catch (e) {
-      return Left(CacheFailure(message: e.toString()));
-    }
+    return Right(localTrips);
   }
 
   @override

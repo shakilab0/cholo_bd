@@ -304,17 +304,9 @@ class _TransportCard extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(transport.estimatedTime,
-                  style: AppTextStyle.caption.copyWith(
-                      color: AppColor.textSecondary)),
-              Text(transport.estimatedCost,
-                  style: AppTextStyle.labelSmall.copyWith(
-                      color: AppColor.primary, fontWeight: FontWeight.w700)),
-            ],
-          ),
+          Text(transport.estimatedTime,
+              style: AppTextStyle.caption.copyWith(
+                  color: AppColor.textSecondary)),
         ],
       ),
     );

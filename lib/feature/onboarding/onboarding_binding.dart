@@ -4,6 +4,8 @@ import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
 class OnboardingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<OnboardingController>(() => OnboardingController());
+    if (!Get.isRegistered<OnboardingController>()) {
+      Get.put(OnboardingController(), permanent: true);
+    }
   }
 }

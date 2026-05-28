@@ -43,7 +43,8 @@ class TripPlanningController extends GetxController {
   static const int maxPlacesPerDay = 5;
 
   // Step 3 — Date / Time
-  final Rx<DateTime> selectedDate = DateTime.now().obs;
+  final Rx<DateTime> selectedDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).obs;
 
   // Step 4 — Transport
   final Rx<TransportOptionModel?> selectedTransport =

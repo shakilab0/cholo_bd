@@ -32,6 +32,8 @@ class ProfilePage extends StatelessWidget {
                     _SettingsSection(),
                     const SizedBox(height: 24),
                     _GuestBanner(controller: c),
+                    const SizedBox(height: 16),
+                    _LogoutButton(controller: c),
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -281,6 +283,61 @@ class _SettingsTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       dense: true,
     );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  final ProfileController controller;
+  const _LogoutButton({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isGuest) return const SizedBox.shrink();
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: () => Get.dialog(
+            AlertDialog(
+              backgroundColor: AppColor.bgCard,
+              title: Text('Sign Out', style: AppTextStyle.sectionTitle),
+              content: Text(
+                'Are you sure you want to sign out?',
+                style: AppTextStyle.bodySmall,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: Text('Cancel',
+                      style: AppTextStyle.labelSmall
+                          .copyWith(color: AppColor.textSecondary)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                    controller.logout();
+                  },
+                  child: Text('Sign Out',
+                      style: AppTextStyle.labelSmall
+                          .copyWith(color: AppColor.alertRed)),
+                ),
+              ],
+            ),
+          ),
+          icon: const Icon(Icons.logout_rounded,
+              color: AppColor.alertRed, size: 18),
+          label: Text('Sign Out',
+              style: AppTextStyle.labelSmall
+                  .copyWith(color: AppColor.alertRed, fontWeight: FontWeight.w600)),
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: AppColor.alertRed),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+        ),
+      );
+    });
   }
 }
 

@@ -1,7 +1,11 @@
 import 'package:get/get.dart';
 import 'package:cholo_bd/feature/splash_screen/splash_screen.dart';
-import 'package:cholo_bd/feature/onboarding/onboarding_page.dart';
 import 'package:cholo_bd/feature/onboarding/onboarding_binding.dart';
+import 'package:cholo_bd/feature/onboarding/pages/onboarding_step1_page.dart';
+import 'package:cholo_bd/feature/onboarding/pages/onboarding_step2_page.dart';
+import 'package:cholo_bd/feature/onboarding/pages/onboarding_step3_page.dart';
+import 'package:cholo_bd/feature/onboarding/pages/onboarding_step4_name_page.dart';
+import 'package:cholo_bd/feature/onboarding/pages/onboarding_step5_preference_page.dart';
 import 'package:cholo_bd/feature/auth/auth_page.dart';
 import 'package:cholo_bd/feature/auth/auth_binding.dart';
 import 'package:cholo_bd/feature/tabbar/tabbar_view_page.dart';
@@ -29,8 +33,28 @@ import 'package:cholo_bd/feature/all_districts/all_districts_page.dart';
 final List<GetPage> appRoutes = [
   GetPage(name: AppRoutes.splash, page: () => const SplashScreen()),
   GetPage(
-    name: AppRoutes.onboarding,
-    page: () => const OnboardingPage(),
+    name: AppRoutes.onboardingStep1,
+    page: () => const OnboardingStep1Page(),
+    binding: OnboardingBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.onboardingStep2,
+    page: () => const OnboardingStep2Page(),
+    binding: OnboardingBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.onboardingStep3,
+    page: () => const OnboardingStep3Page(),
+    binding: OnboardingBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.onboardingName,
+    page: () => const OnboardingStep4NamePage(),
+    binding: OnboardingBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.onboardingPreference,
+    page: () => const OnboardingStep5PreferencePage(),
     binding: OnboardingBinding(),
   ),
   GetPage(
@@ -97,7 +121,11 @@ final List<GetPage> appRoutes = [
 class AppRoutes {
   AppRoutes._();
   static const String splash = '/';
-  static const String onboarding = '/onboarding';
+  static const String onboardingStep1 = '/onboarding/1';
+  static const String onboardingStep2 = '/onboarding/2';
+  static const String onboardingStep3 = '/onboarding/3';
+  static const String onboardingName = '/onboarding/name';
+  static const String onboardingPreference = '/onboarding/preference';
   static const String auth = '/auth';
   static const String tabbar = '/tabbar';
   static const String home = '/home';

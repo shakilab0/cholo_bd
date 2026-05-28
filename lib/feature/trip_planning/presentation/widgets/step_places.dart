@@ -68,10 +68,14 @@ class StepPlaces extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 final place = places[i];
-                return Obx(() => _PlaceTile(
-                      controller: controller,
-                      place: place,
-                    ));
+                return Obx(() {
+                  final selected = controller.isPlaceSelected(place);
+                  return _PlaceTile(
+                    controller: controller,
+                    place: place,
+                    selected: selected,
+                  );
+                });
               },
             );
           }),
@@ -84,12 +88,12 @@ class StepPlaces extends StatelessWidget {
 class _PlaceTile extends StatelessWidget {
   final TripPlanningController controller;
   final PlaceModel place;
+  final bool selected;
 
-  const _PlaceTile({required this.controller, required this.place});
+  const _PlaceTile({required this.controller, required this.place, required this.selected});
 
   @override
   Widget build(BuildContext context) {
-    final selected = controller.isPlaceSelected(place);
     return GestureDetector(
       onTap: () => controller.togglePlace(place),
       child: AnimatedContainer(

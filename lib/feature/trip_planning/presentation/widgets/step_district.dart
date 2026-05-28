@@ -46,6 +46,7 @@ class StepDistrict extends StatelessWidget {
                     style: AppTextStyle.bodySmall),
               );
             }
+            final selectedId = controller.selectedDistrict.value?.id;
             return GridView.builder(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,8 +58,7 @@ class StepDistrict extends StatelessWidget {
               itemCount: controller.districts.length,
               itemBuilder: (_, i) {
                 final district = controller.districts[i];
-                final selected =
-                    controller.selectedDistrict.value?.id == district.id;
+                final selected = selectedId == district.id;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

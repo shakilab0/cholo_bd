@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
+import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/dio_helper/appwrite_provider.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/trip_model.dart';
 import 'package:cholo_bd/feature/trip_planning/domain/useCase/get_trips_use_case.dart';
@@ -31,7 +32,8 @@ class ProfileController extends GetxController {
   Future<void> _loadProfile() async {
     isLoadingProfile.value = true;
     if (MyApp.isGuestMode.value) {
-      displayName.value = 'Guest Explorer';
+      final cached = getDisplayName();
+      displayName.value = cached ?? 'Guest Explorer';
       isLoadingProfile.value = false;
       return;
     }
@@ -80,6 +82,18 @@ class ProfileController extends GetxController {
   void toggleLanguage() {
     MyApp.isEnglish.value = !MyApp.isEnglish.value;
     saveLanguageIsEnglish(MyApp.isEnglish.value);
+  }
+
+  Future<void> logout() async {
+    try {
+      await _appWrite.account.deleteSession(sessionId: 'current');
+    } catch (e) {
+      log('Logout Appwrite error: $e');
+    }
+    await clearUserSession();
+    await saveTripsToCache([]);
+    MyApp.isGuestMode.value = true;
+    Get.offAllNamed(AppRoutes.auth);
   }
 
   bool get isGuest => MyApp.isGuestMode.value;

@@ -25,6 +25,17 @@ bool getIsFirstLaunch() {
   return Hive.box(_settingsBox).get('is_first_launch', defaultValue: true);
 }
 
+Future<void> saveOnboardingCompleted(bool value) async {
+  final box = await _openBox(_settingsBox);
+  await box.put('onboarding_completed', value);
+}
+
+bool getOnboardingCompleted() {
+  if (!Hive.isBoxOpen(_settingsBox)) return false;
+  return Hive.box(_settingsBox)
+      .get('onboarding_completed', defaultValue: false);
+}
+
 Future<void> saveLanguageIsEnglish(bool value) async {
   final box = await _openBox(_settingsBox);
   await box.put('lang_is_english', value);
@@ -42,7 +53,7 @@ Future<void> saveIsGuestMode(bool value) async {
 
 bool getIsGuestMode() {
   if (!Hive.isBoxOpen(_settingsBox)) return true;
-  return Hive.box(_settingsBox).get('is_guest_mode', defaultValue: true);
+  return Hive.box(_settingsBox).get('is_guest_mode', defaultValue: false);
 }
 
 Future<void> saveDisplayName(String name) async {
@@ -55,6 +66,25 @@ String? getDisplayName() {
   final name = Hive.box(_settingsBox).get('display_name');
   if (name == null || (name is String && name.trim().isEmpty)) return null;
   return name as String;
+}
+
+Future<void> savePreferredLocationTypes(List<String> types) async {
+  final box = await _openBox(_settingsBox);
+  final cleaned = types
+      .whereType<String>()
+      .map((e) => e.trim())
+      .where((e) => e.isNotEmpty)
+      .toSet()
+      .toList()
+    ..sort();
+  await box.put('preferred_location_types', cleaned);
+}
+
+List<String> getPreferredLocationTypes() {
+  if (!Hive.isBoxOpen(_settingsBox)) return [];
+  final data = Hive.box(_settingsBox).get('preferred_location_types');
+  if (data == null) return [];
+  return List<String>.from(data).where((e) => e.trim().isNotEmpty).toList();
 }
 
 // ── Districts Cache ───────────────────────────────────────────────────────────
@@ -90,6 +120,26 @@ List<Map<String, dynamic>> getPlacesFromCache(String districtId) {
   return List<Map<String, dynamic>>.from(
     (data as List).map((e) => Map<String, dynamic>.from(e)),
   );
+}
+
+// ── Auth User ────────────────────────────────────────────────────────────────
+
+Future<void> saveUserId(String userId) async {
+  final box = await _openBox(_settingsBox);
+  await box.put('user_id', userId);
+}
+
+String? getUserId() {
+  if (!Hive.isBoxOpen(_settingsBox)) return null;
+  final v = Hive.box(_settingsBox).get('user_id');
+  return (v is String && v.isNotEmpty) ? v : null;
+}
+
+Future<void> clearUserSession() async {
+  final box = await _openBox(_settingsBox);
+  await box.delete('user_id');
+  await box.delete('display_name');
+  await box.put('is_guest_mode', true);
 }
 
 // ── Trips ─────────────────────────────────────────────────────────────────────

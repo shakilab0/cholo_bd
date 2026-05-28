@@ -24,15 +24,10 @@ class SplashScreen extends StatelessWidget {
               curve: Curves.bounceOut,
               builder: (_, val, child) =>
                   Transform.translate(offset: Offset(0, val), child: child),
-              child: Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  color: AppColor.primary,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: const Icon(Icons.travel_explore,
-                    color: AppColor.inkDark, size: 48),
+              child: Image.asset(
+                'assets/icons/app_icon.png',
+                width: 100,
+                height: 100,
               ),
             ),
             const SizedBox(height: 24),

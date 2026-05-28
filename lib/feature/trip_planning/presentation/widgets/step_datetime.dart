@@ -65,10 +65,12 @@ class StepDatetime extends StatelessWidget {
           const SizedBox(height: 10),
           Obx(() {
             final selected = controller.selectedDate.value;
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
             return CalendarDatePicker(
               initialDate: selected,
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
+              firstDate: today,
+              lastDate: today.add(const Duration(days: 365)),
               onDateChanged: controller.selectDate,
             );
           }),

@@ -18,8 +18,11 @@ class AuthPage extends GetView<AuthController> {
           child: Column(
             children: [
               const Spacer(),
-              const Icon(Icons.travel_explore,
-                  color: AppColor.primary, size: 72),
+              Image.asset(
+                'assets/icons/app_icon.png',
+                width: 90,
+                height: 90,
+              ),
               const SizedBox(height: 24),
               Text(AppStrings.appName,
                   style: AppTextStyle.heading1, textAlign: TextAlign.center),
