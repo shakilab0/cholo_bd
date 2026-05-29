@@ -34,6 +34,13 @@ class TripRepositoryImpl implements TripRepository {
         'status': trip.status.name,
         'user_id': getUserId() ?? '',
         'notes': trip.notes ?? '',
+        if (trip.startLat != null) 'start_lat': trip.startLat,
+        if (trip.startLng != null) 'start_lng': trip.startLng,
+        if (trip.startLabel != null) 'start_label': trip.startLabel,
+        if (trip.transportRouteDisplay != null)
+          'transport_route_display': trip.transportRouteDisplay,
+        if (trip.transportDistanceKm != null)
+          'transport_distance_km': trip.transportDistanceKm,
       };
 
   TripModel _fromAppwriteDoc(Map<String, dynamic> data, String docId) {
@@ -57,6 +64,12 @@ class TripRepositoryImpl implements TripRepository {
         orElse: () => TripStatus.upcoming,
       ),
       notes: data['notes'],
+      startLat: (data['start_lat'] as num?)?.toDouble(),
+      startLng: (data['start_lng'] as num?)?.toDouble(),
+      startLabel: data['start_label'] as String?,
+      transportRouteDisplay: data['transport_route_display'] as String?,
+      transportDistanceKm:
+          (data['transport_distance_km'] as num?)?.toDouble(),
     );
   }
 
@@ -114,6 +127,11 @@ class TripRepositoryImpl implements TripRepository {
       createdAt: DateTime.now(),
       status: TripStatus.upcoming,
       notes: trip.notes,
+      startLat: trip.startLat,
+      startLng: trip.startLng,
+      startLabel: trip.startLabel,
+      transportRouteDisplay: trip.transportRouteDisplay,
+      transportDistanceKm: trip.transportDistanceKm,
     );
 
     // Save locally first (offline-first)

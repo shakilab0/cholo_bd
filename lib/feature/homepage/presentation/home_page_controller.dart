@@ -8,12 +8,19 @@ import 'package:cholo_bd/feature/homepage/data/model/district_model.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/homepage/domain/useCase/get_districts_use_case.dart';
 import 'package:cholo_bd/feature/homepage/domain/useCase/get_featured_places_use_case.dart';
+import 'package:cholo_bd/core/services/location_service.dart';
 
 class HomePageController extends GetxController {
   final GetDistrictsUseCase _getDistrictsUseCase;
   final GetFeaturedPlacesUseCase _getFeaturedPlacesUseCase;
 
   HomePageController(this._getDistrictsUseCase, this._getFeaturedPlacesUseCase);
+
+  LocationService get _location => Get.find<LocationService>();
+
+  String get locationLabel => _location.displayLabel;
+
+  bool get isLocationLoading => _location.isLoading.value;
 
   // State
   final RxList<DistrictModel> districts = <DistrictModel>[].obs;
@@ -63,7 +70,19 @@ class HomePageController extends GetxController {
     super.onInit();
     recentSearches.value = getRecentSearches();
     _loadData();
+    _location.requestAndRefresh();
     ever(searchQuery, _filterDistricts);
+  }
+
+  Future<void> refreshLocation() => _location.requestAndRefresh();
+
+  Future<void> onLocationPillTap() async {
+    if (!_location.permissionGranted.value) {
+      await _location.requestAndRefresh();
+      if (!_location.permissionGranted.value) {
+        await _location.openSettings();
+      }
+    }
   }
 
   Future<void> _loadData() async {

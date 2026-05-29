@@ -41,6 +41,9 @@ app.*.map.json
 
 # Appwrite upload tools — never commit secrets
 tools/**/.env
+.env
+.env.*
+!.env.example
 
 # Android Studio will place build artifacts here
 /android/app/debug

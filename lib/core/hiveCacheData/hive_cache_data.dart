@@ -180,6 +180,28 @@ Future<void> clearRecentSearches() async {
   await box.delete('searches');
 }
 
+// ── Last known location ───────────────────────────────────────────────────────
+
+Future<void> saveCachedLocation({
+  required double lat,
+  required double lng,
+  required String label,
+}) async {
+  final box = await _openBox(_settingsBox);
+  await box.put('last_location', {
+    'lat': lat,
+    'lng': lng,
+    'label': label,
+  });
+}
+
+Map<String, dynamic>? getCachedLocation() {
+  if (!Hive.isBoxOpen(_settingsBox)) return null;
+  final data = Hive.box(_settingsBox).get('last_location');
+  if (data == null) return null;
+  return Map<String, dynamic>.from(data as Map);
+}
+
 // ── Open all boxes on startup ─────────────────────────────────────────────────
 
 Future<void> openHiveBoxes() async {

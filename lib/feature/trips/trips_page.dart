@@ -186,7 +186,9 @@ class _TripCard extends StatelessWidget {
               const SizedBox(width: 16),
               _MetaItem(
                 icon: Icons.event_rounded,
-                text: DateFormat('d MMM yyyy').format(trip.tripDate),
+                text: trip.hasStartTime
+                    ? '${DateFormat('d MMM').format(trip.tripDate)} · ${trip.startTimeDisplay}'
+                    : DateFormat('d MMM yyyy').format(trip.tripDate),
               ),
               const SizedBox(width: 16),
               _MetaItem(

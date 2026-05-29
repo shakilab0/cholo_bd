@@ -85,8 +85,7 @@ class _BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(
-          16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
       decoration: const BoxDecoration(
         color: AppColor.bgCard,
         border: Border(top: BorderSide(color: AppColor.border)),
@@ -96,77 +95,48 @@ class _BottomBar extends StatelessWidget {
         final isLast = step == TripPlanningController.totalSteps - 1;
         final canGoNext = controller.canGoNext;
 
-        return Row(
-          children: [
-            if (step > 0)
-              OutlinedButton(
-                onPressed: controller.previousStep,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColor.textPrimary,
-                  side: const BorderSide(color: AppColor.border),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+        return isLast
+            ? Obx(() => ElevatedButton(
+                  onPressed: controller.isCreating.value
+                      ? null
+                      : controller.confirmTrip,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.primary,
+                    foregroundColor: AppColor.inkDark,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    disabledBackgroundColor: AppColor.primary.withValues(alpha: 0.5),
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(controller.isCreating.value
+                      ? 'Saving...'
+                          : 'Confirm Trip',
+                      style: AppTextStyle.sectionTitle.copyWith(color: AppColor.inkDark)),
+                    ],
+                  ),
+                ))
+            : ElevatedButton(
+                onPressed: canGoNext ? controller.nextStep : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.primary,
+                  foregroundColor: AppColor.inkDark,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  disabledBackgroundColor: AppColor.primary.withValues(alpha: 0.3),
                 ),
-                child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-              ),
-            if (step > 0) const SizedBox(width: 12),
-            Expanded(
-              child: isLast
-                  ? Obx(() => ElevatedButton.icon(
-                        onPressed: controller.isCreating.value
-                            ? null
-                            : controller.confirmTrip,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColor.primary,
-                          foregroundColor: AppColor.inkDark,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
-                          disabledBackgroundColor:
-                              AppColor.primary.withValues(alpha: 0.5),
-                        ),
-                        icon: controller.isCreating.value
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: AppColor.inkDark))
-                            : const Icon(Icons.check_circle_rounded, size: 20),
-                        label: Text(
-                          controller.isCreating.value
-                              ? 'Saving...'
-                              : 'Confirm Trip',
-                          style: AppTextStyle.sectionTitle
-                              .copyWith(color: AppColor.inkDark),
-                        ),
-                      ))
-                  : ElevatedButton(
-                      onPressed: canGoNext ? controller.nextStep : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColor.primary,
-                        foregroundColor: AppColor.inkDark,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14)),
-                        disabledBackgroundColor:
-                            AppColor.primary.withValues(alpha: 0.3),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Next',
-                              style: AppTextStyle.sectionTitle
-                                  .copyWith(color: AppColor.inkDark)),
-                          const SizedBox(width: 6),
-                          const Icon(Icons.arrow_forward_ios_rounded, size: 14),
-                        ],
-                      ),
-                    ),
-            ),
-          ],
-        );
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Next',
+                        style: AppTextStyle.sectionTitle.copyWith(color: AppColor.inkDark)),
+                    const SizedBox(width: 6),
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  ],
+                ),
+              );
       }),
     );
   }

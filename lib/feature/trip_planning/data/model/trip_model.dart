@@ -1,5 +1,6 @@
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/transport_option_model.dart';
+import 'package:intl/intl.dart';
 
 enum TripStatus { upcoming, active, completed }
 
@@ -14,6 +15,11 @@ class TripModel {
   final DateTime createdAt;
   final TripStatus status;
   final String? notes;
+  final double? startLat;
+  final double? startLng;
+  final String? startLabel;
+  final String? transportRouteDisplay;
+  final double? transportDistanceKm;
 
   const TripModel({
     required this.id,
@@ -26,7 +32,20 @@ class TripModel {
     required this.createdAt,
     this.status = TripStatus.upcoming,
     this.notes,
+    this.startLat,
+    this.startLng,
+    this.startLabel,
+    this.transportRouteDisplay,
+    this.transportDistanceKm,
   });
+
+  String get transportTimeLabel =>
+      transportRouteDisplay ?? transport.estimatedTime;
+
+  bool get hasStartTime => tripDate.hour != 0 || tripDate.minute != 0;
+
+  String get startTimeDisplay =>
+      DateFormat('h:mm a').format(tripDate);
 
   String get autoName {
     final now = DateTime.now();
@@ -56,6 +75,13 @@ class TripModel {
         'created_at': createdAt.millisecondsSinceEpoch,
         'status': status.name,
         'notes': notes,
+        if (startLat != null) 'start_lat': startLat,
+        if (startLng != null) 'start_lng': startLng,
+        if (startLabel != null) 'start_label': startLabel,
+        if (transportRouteDisplay != null)
+          'transport_route_display': transportRouteDisplay,
+        if (transportDistanceKm != null)
+          'transport_distance_km': transportDistanceKm,
       };
 
   factory TripModel.fromMap(Map<String, dynamic> map) => TripModel(
@@ -75,5 +101,10 @@ class TripModel {
           orElse: () => TripStatus.upcoming,
         ),
         notes: map['notes'],
+        startLat: (map['start_lat'] as num?)?.toDouble(),
+        startLng: (map['start_lng'] as num?)?.toDouble(),
+        startLabel: map['start_label'] as String?,
+        transportRouteDisplay: map['transport_route_display'] as String?,
+        transportDistanceKm: (map['transport_distance_km'] as num?)?.toDouble(),
       );
 }

@@ -109,12 +109,36 @@ class _TripHeaderCard extends StatelessWidget {
             label: 'District',
             value: trip.districtName,
           ),
+          if (trip.startLabel != null && trip.startLabel!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _InfoRow(
+              icon: Icons.my_location_rounded,
+              label: 'Start',
+              value: trip.startLabel!,
+            ),
+          ],
+          if (trip.places.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _InfoRow(
+              icon: Icons.flag_rounded,
+              label: 'Destination',
+              value: trip.places.first.name,
+            ),
+          ],
           const SizedBox(height: 10),
           _InfoRow(
             icon: Icons.event_rounded,
             label: 'Date',
             value: DateFormat('EEEE, d MMMM yyyy').format(trip.tripDate),
           ),
+          if (trip.hasStartTime) ...[
+            const SizedBox(height: 10),
+            _InfoRow(
+              icon: Icons.schedule_rounded,
+              label: 'Start time',
+              value: trip.startTimeDisplay,
+            ),
+          ],
           const SizedBox(height: 10),
           _InfoRow(
             icon: Icons.place_rounded,
@@ -304,7 +328,7 @@ class _TransportCard extends StatelessWidget {
               ],
             ),
           ),
-          Text(transport.estimatedTime,
+          Text(trip.transportTimeLabel,
               style: AppTextStyle.caption.copyWith(
                   color: AppColor.textSecondary)),
         ],

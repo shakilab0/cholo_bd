@@ -116,6 +116,22 @@ class _SummaryCard extends StatelessWidget {
               label: 'District',
               value: district?.name ?? '—',
             ),
+            if (controller.startLocationLabel.value.isNotEmpty) ...[
+              const _Divider(),
+              _SummaryRow(
+                icon: Icons.my_location_rounded,
+                label: 'Start',
+                value: controller.startLocationLabel.value,
+              ),
+            ],
+            if (controller.selectedPlaces.isNotEmpty) ...[
+              const _Divider(),
+              _SummaryRow(
+                icon: Icons.flag_rounded,
+                label: 'Destination',
+                value: controller.destinationPlaceName,
+              ),
+            ],
             const _Divider(),
             _SummaryRow(
               icon: Icons.place_rounded,
@@ -130,9 +146,17 @@ class _SummaryCard extends StatelessWidget {
             ),
             const _Divider(),
             _SummaryRow(
+              icon: Icons.schedule_rounded,
+              label: 'Start time',
+              value: controller.startTimeLabel,
+            ),
+            const _Divider(),
+            _SummaryRow(
               icon: transport?.icon ?? Icons.directions_bus_rounded,
               label: 'Transport',
-              value: transport?.name ?? '—',
+              value: transport != null
+                  ? '${transport.name} · ${controller.timeLabelFor(transport)}'
+                  : '—',
             ),
           ],
         ),

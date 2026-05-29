@@ -5,6 +5,7 @@ import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/config/constant/constantText.dart';
+import 'package:cholo_bd/core/services/location_service.dart';
 import 'package:cholo_bd/feature/homepage/presentation/home_page_controller.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/district_card.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/featured_slider.dart';
@@ -140,23 +141,48 @@ class HomePage extends GetView<HomePageController> {
       child: Row(
         children: [
           // Location pill
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppColor.bgCard,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColor.border),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.location_on_rounded,
-                    color: AppColor.primary, size: 16),
-                const SizedBox(width: 4),
-                Text('Bangladesh', style: AppTextStyle.labelSmall),
-              ],
-            ),
-          ),
+          Obx(() {
+            final loc = Get.find<LocationService>();
+            return GestureDetector(
+              onTap: controller.onLocationPillTap,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                constraints: const BoxConstraints(maxWidth: 160),
+                decoration: BoxDecoration(
+                  color: AppColor.bgCard,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColor.border),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.location_on_rounded,
+                        color: AppColor.primary, size: 16),
+                    const SizedBox(width: 4),
+                    if (loc.isLoading.value)
+                      SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColor.primary.withValues(alpha: 0.7),
+                        ),
+                      )
+                    else
+                      Flexible(
+                        child: Text(
+                          controller.locationLabel,
+                          style: AppTextStyle.labelSmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          }),
           const Spacer(),
           // Language toggle
           Obx(() => GestureDetector(
