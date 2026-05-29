@@ -38,7 +38,7 @@ class HomePage extends GetView<HomePageController> {
                 SeasonBanner(controller: controller),
 
                 // Featured Places Slider
-                _SectionHeader(
+                _sectionHeader(
                   title: AppStrings.featuredPlaces,
                   onSeeAll: () {},
                 ),
@@ -55,7 +55,7 @@ class HomePage extends GetView<HomePageController> {
                 const SizedBox(height: 16),
 
                 // Quick Actions
-                _SectionHeader(
+                _sectionHeader(
                   title: 'Quick Actions',
                   showSeeAll: false,
                 ),
@@ -63,7 +63,7 @@ class HomePage extends GetView<HomePageController> {
                 QuickActionsRow(controller: controller),
                 const SizedBox(height: 10),
                 // Explore Districts
-                _SectionHeader(
+                _sectionHeader(
                   title: AppStrings.exploreDistricts,
                   onSeeAll: controller.navigateToAllDistricts,
                 ),
@@ -231,28 +231,15 @@ class HomePage extends GetView<HomePageController> {
       ),
     );
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final VoidCallback? onSeeAll;
-  final bool showSeeAll;
-
-  const _SectionHeader({
-    required this.title,
-    this.onSeeAll,
-    this.showSeeAll = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _sectionHeader({required String title, VoidCallback? onSeeAll, bool? showSeeAll,}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: AppTextStyle.sectionTitle),
-          if (showSeeAll && onSeeAll != null)
+          if (showSeeAll != null && onSeeAll != null)
             GestureDetector(
               onTap: onSeeAll,
               child: Text(AppStrings.seeAll,
@@ -263,4 +250,6 @@ class _SectionHeader extends StatelessWidget {
       ),
     );
   }
+
 }
+

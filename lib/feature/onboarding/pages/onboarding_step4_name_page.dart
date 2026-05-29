@@ -161,8 +161,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed:
-                          controller.submitNameAndGoToPreference,
+                          onPressed: controller.submitNameAndGoToPreference,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.primary,
                             shape: RoundedRectangleBorder(

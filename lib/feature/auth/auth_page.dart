@@ -56,7 +56,9 @@ class AuthPage extends GetView<AuthController> {
                 width: double.infinity,
                 height: 52,
                 child: OutlinedButton.icon(
-                  onPressed: controller.loginWithGoogle,
+                  onPressed: (){
+                    ///controller.loginWithGoogle();
+                  },
                   icon: const Icon(Icons.g_mobiledata_rounded,
                       color: AppColor.textPrimary, size: 24),
                   label: Text(AppStrings.loginWithGoogle,

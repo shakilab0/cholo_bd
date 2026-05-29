@@ -23,17 +23,17 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _ProfileHeader(controller: c),
+                    profileHeader(controller: c, context: context),
                     const SizedBox(height: 24),
-                    _StatsRow(controller: c),
-                    const SizedBox(height: 24),
-                    _LanguageToggle(controller: c),
+                    statsRow(controller: c, context: context),
+                    const SizedBox(height: 24, ),
+                    languageToggle(controller: c,context: context),
                     const SizedBox(height: 16),
-                    _SettingsSection(),
+                    settingsSection(context: context),
                     const SizedBox(height: 24),
-                    _GuestBanner(controller: c),
+                    guestBanner(controller: c,context: context),
                     const SizedBox(height: 16),
-                    _LogoutButton(controller: c),
+                    logoutButton(controller: c,context: context),
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -44,14 +44,9 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _ProfileHeader extends StatelessWidget {
-  final ProfileController controller;
-  const _ProfileHeader({required this.controller});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget profileHeader({required BuildContext context,required ProfileController controller}){
     return Row(
       children: [
         Container(
@@ -80,55 +75,43 @@ class _ProfileHeader extends StatelessWidget {
       ],
     );
   }
-}
 
-class _StatsRow extends StatelessWidget {
-  final ProfileController controller;
-  const _StatsRow({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget statsRow({required BuildContext context,required ProfileController controller}){
     return Obx(() => Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColor.bgCard,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColor.border),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColor.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColor.border),
+      ),
+      child: Row(
+        children: [
+          statItem(
+            value: controller.totalTrips.value.toString(),
+            label: 'Trips',
+            icon: Icons.luggage_rounded,
+            context: context,
           ),
-          child: Row(
-            children: [
-              _StatItem(
-                value: controller.totalTrips.value.toString(),
-                label: 'Trips',
-                icon: Icons.luggage_rounded,
-              ),
-              _StatDivider(),
-              _StatItem(
-                value: controller.placesVisited.value.toString(),
-                label: 'Places',
-                icon: Icons.place_rounded,
-              ),
-              _StatDivider(),
-              _StatItem(
-                value: controller.districtsExplored.value.toString(),
-                label: 'Districts',
-                icon: Icons.map_rounded,
-              ),
-            ],
+          Container(width: 1, height: 48, color: AppColor.border),
+          statItem(
+            value: controller.placesVisited.value.toString(),
+            label: 'Places',
+            icon: Icons.place_rounded,
+            context: context,
           ),
-        ));
+          Container(width: 1, height: 48, color: AppColor.border),
+          statItem(
+            value: controller.districtsExplored.value.toString(),
+            label: 'Districts',
+            icon: Icons.map_rounded,
+            context: context,
+          ),
+        ],
+      ),
+    ));
   }
-}
 
-class _StatItem extends StatelessWidget {
-  final String value;
-  final String label;
-  final IconData icon;
-  const _StatItem(
-      {required this.value, required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget statItem({required BuildContext context,required  String value, required String label, required IconData icon,}){
     return Expanded(
       child: Column(
         children: [
@@ -141,22 +124,8 @@ class _StatItem extends StatelessWidget {
       ),
     );
   }
-}
 
-class _StatDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 1, height: 48, color: AppColor.border);
-  }
-}
-
-class _LanguageToggle extends StatelessWidget {
-  final ProfileController controller;
-  const _LanguageToggle({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget languageToggle({required BuildContext context,required ProfileController controller}){
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
@@ -176,63 +145,60 @@ class _LanguageToggle extends StatelessWidget {
                 Text('Language', style: AppTextStyle.labelSmall.copyWith(
                     color: AppColor.textPrimary, fontWeight: FontWeight.w600)),
                 Obx(() => Text(
-                      MyApp.isEnglish.value ? 'English' : 'বাংলা',
-                      style: AppTextStyle.caption,
-                    )),
+                  MyApp.isEnglish.value ? 'English' : 'বাংলা',
+                  style: AppTextStyle.caption,
+                )),
               ],
             ),
           ),
           Obx(() => GestureDetector(
-                onTap: controller.toggleLanguage,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 56,
-                  height: 28,
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: MyApp.isEnglish.value
-                        ? AppColor.primary
-                        : AppColor.bgCardLight,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Stack(
-                    children: [
-                      AnimatedAlign(
-                        duration: const Duration(milliseconds: 200),
-                        alignment: MyApp.isEnglish.value
-                            ? Alignment.centerLeft
-                            : Alignment.centerRight,
-                        child: Container(
-                          width: 22,
-                          height: 22,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Text(
-                              MyApp.isEnglish.value ? 'EN' : 'বাং',
-                              style: const TextStyle(
-                                  fontSize: 7,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColor.inkDark),
-                            ),
-                          ),
+            onTap: controller.toggleLanguage,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 56,
+              height: 28,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: MyApp.isEnglish.value
+                    ? AppColor.primary
+                    : AppColor.bgCardLight,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Stack(
+                children: [
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 200),
+                    alignment: MyApp.isEnglish.value
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          MyApp.isEnglish.value ? 'EN' : 'বাং',
+                          style: const TextStyle(
+                              fontSize: 7,
+                              fontWeight: FontWeight.w800,
+                              color: AppColor.inkDark),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              )),
+                ],
+              ),
+            ),
+          )),
         ],
       ),
     );
   }
-}
 
-class _SettingsSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget settingsSection({required BuildContext context}){
     return Container(
       decoration: BoxDecoration(
         color: AppColor.bgCard,
@@ -241,38 +207,32 @@ class _SettingsSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _SettingsTile(
+          settingsTile(
             icon: Icons.notifications_rounded,
             label: 'Notifications',
             onTap: () {},
+            context: context,
           ),
           const Divider(color: AppColor.border, height: 1, indent: 52),
-          _SettingsTile(
+          settingsTile(
             icon: Icons.cloud_download_rounded,
             label: 'Offline Data',
             onTap: () {},
+            context: context,
           ),
           const Divider(color: AppColor.border, height: 1, indent: 52),
-          _SettingsTile(
+          settingsTile(
             icon: Icons.info_outline_rounded,
             label: 'About Smart Travel BD',
             onTap: () {},
+            context: context,
           ),
         ],
       ),
     );
   }
-}
 
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  const _SettingsTile(
-      {required this.icon, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget settingsTile({required BuildContext context,required IconData icon, required String label,required VoidCallback onTap}){
     return ListTile(
       onTap: onTap,
       leading: Icon(icon, color: AppColor.primary, size: 20),
@@ -284,14 +244,8 @@ class _SettingsTile extends StatelessWidget {
       dense: true,
     );
   }
-}
 
-class _LogoutButton extends StatelessWidget {
-  final ProfileController controller;
-  const _LogoutButton({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget logoutButton({required BuildContext context,required ProfileController controller}){
     return Obx(() {
       if (controller.isGuest) return const SizedBox.shrink();
       return SizedBox(
@@ -332,21 +286,15 @@ class _LogoutButton extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: AppColor.alertRed),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
         ),
       );
     });
   }
-}
 
-class _GuestBanner extends StatelessWidget {
-  final ProfileController controller;
-  const _GuestBanner({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget guestBanner({required BuildContext context,required ProfileController controller}){
     return Obx(() {
       if (!controller.isGuest) return const SizedBox.shrink();
       return Container(
@@ -401,4 +349,5 @@ class _GuestBanner extends StatelessWidget {
       );
     });
   }
+
 }
