@@ -78,7 +78,10 @@ class FeaturedSlider extends StatelessWidget {
                       children: [
                         Obx(() => Text(
                               MyApp.isEnglish.value ? place.name : place.nameBn,
-                              style: AppTextStyle.heading3,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Colors.white,),
                             )),
                         Row(
                           children: [

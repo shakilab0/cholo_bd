@@ -47,7 +47,7 @@ class HomepageRemoteDataSource {
       final result = await _provider.databases.listDocuments(
         databaseId: AppWriteConstants.databaseId,
         collectionId: AppWriteConstants.placesCollection,
-        queries: [Query.orderDesc('rating'), Query.limit(6)],
+        queries: [Query.orderDesc('rating'), Query.limit(8)],
       );
       return result.documents
           .map((doc) => PlaceModel.fromMap(doc.data))

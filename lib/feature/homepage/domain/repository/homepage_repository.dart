@@ -7,6 +7,5 @@ abstract class HomepageRepository {
   Future<Either<Failure, List<DistrictModel>>> getDistricts();
   Future<Either<Failure, List<PlaceModel>>> getFeaturedPlaces();
   Future<Either<Failure, List<PlaceModel>>> getMapPlaces();
-  Future<Either<Failure, List<PlaceModel>>> getPlacesByDistrict(
-      String districtId);
+  Future<Either<Failure, List<PlaceModel>>> getPlacesByDistrict(String districtId);
 }

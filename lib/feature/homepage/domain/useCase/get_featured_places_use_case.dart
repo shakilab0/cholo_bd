@@ -9,6 +9,5 @@ class GetFeaturedPlacesUseCase implements NoParamsUseCase<List<PlaceModel>> {
   GetFeaturedPlacesUseCase(this._repository);
 
   @override
-  Future<Either<Failure, List<PlaceModel>>> execute() =>
-      _repository.getFeaturedPlaces();
+  Future<Either<Failure, List<PlaceModel>>> execute() => _repository.getFeaturedPlaces();
 }
