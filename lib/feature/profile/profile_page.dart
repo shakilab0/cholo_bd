@@ -29,6 +29,8 @@ class ProfilePage extends StatelessWidget {
                     const SizedBox(height: 24, ),
                     languageToggle(controller: c,context: context),
                     const SizedBox(height: 16),
+                    notificationTestButton(controller: c),
+                    const SizedBox(height: 16),
                     settingsSection(context: context),
                     const SizedBox(height: 24),
                     guestBanner(controller: c,context: context),
@@ -198,6 +200,30 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  Widget notificationTestButton({required ProfileController controller}) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: controller.testNotification,
+        icon: const Icon(Icons.notifications_active_rounded,
+            color: AppColor.primary, size: 20),
+        label: Text(
+          'Test Notification',
+          style: AppTextStyle.labelSmall.copyWith(
+            color: AppColor.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: AppColor.primary.withValues(alpha: 0.5)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          backgroundColor: AppColor.bgCard,
+        ),
+      ),
+    );
+  }
+
   Widget settingsSection({required BuildContext context}){
     return Container(
       decoration: BoxDecoration(
@@ -207,13 +233,6 @@ class ProfilePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          settingsTile(
-            icon: Icons.notifications_rounded,
-            label: 'Notifications',
-            onTap: () {},
-            context: context,
-          ),
-          const Divider(color: AppColor.border, height: 1, indent: 52),
           settingsTile(
             icon: Icons.cloud_download_rounded,
             label: 'Offline Data',

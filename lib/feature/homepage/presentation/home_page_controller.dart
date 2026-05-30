@@ -163,6 +163,10 @@ class HomePageController extends GetxController {
         arguments: district != null ? {'district': district} : null);
   }
 
+  void navigateToCategoryPlaces(String categoryId) {
+    Get.toNamed(AppRoutes.categoryPlaces, arguments: categoryId);
+  }
+
   @override
   void onClose() {
     searchController.dispose();

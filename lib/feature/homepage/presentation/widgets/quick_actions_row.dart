@@ -17,19 +17,19 @@ class QuickActionsRow extends StatelessWidget {
       _QuickAction(
           icon: Icons.beach_access_rounded,
           label: 'Beaches',
-          onTap: () {}),
+          onTap: () => controller.navigateToCategoryPlaces('beaches')),
       _QuickAction(
           icon: Icons.forest_rounded,
           label: 'Nature',
-          onTap: () {}),
+          onTap: () => controller.navigateToCategoryPlaces('nature')),
       _QuickAction(
           icon: Icons.museum_rounded,
           label: 'Heritage',
-          onTap: () {}),
+          onTap: () => controller.navigateToCategoryPlaces('heritage')),
       _QuickAction(
           icon: Icons.hiking_rounded,
           label: 'Adventure',
-          onTap: () {}),
+          onTap: () => controller.navigateToCategoryPlaces('adventure')),
     ];
 
     return SizedBox(

@@ -25,7 +25,42 @@ class NotificationService {
         android: androidSettings, iOS: iosSettings);
 
     await _plugin.initialize(settings);
+    await _requestPermissions();
     _initialized = true;
+  }
+
+  Future<void> _requestPermissions() async {
+    final android = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    await android?.requestNotificationsPermission();
+
+    final ios = _plugin.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
+    await ios?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  /// Fires an immediate notification to verify the setup works.
+  Future<void> showTestNotification() async {
+    await init();
+
+    const androidDetails = AndroidNotificationDetails(
+      'smart_travel_bd',
+      'Smart Travel BD',
+      channelDescription: 'Trip reminders and alerts',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+    const iosDetails = DarwinNotificationDetails();
+    const details =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+
+    await _plugin.show(
+      99999,
+      '🔔 Test Notification',
+      'CholoBd notifications are working! Trip reminders will appear like this.',
+      details,
+    );
   }
 
   Future<void> scheduleForTrip(TripModel trip) async {
