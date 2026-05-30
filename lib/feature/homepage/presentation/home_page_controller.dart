@@ -9,6 +9,7 @@ import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/homepage/domain/useCase/get_districts_use_case.dart';
 import 'package:cholo_bd/feature/homepage/domain/useCase/get_featured_places_use_case.dart';
 import 'package:cholo_bd/core/services/location_service.dart';
+import 'package:cholo_bd/feature/tabbar/tabbar_controller.dart';
 
 class HomePageController extends GetxController {
   final GetDistrictsUseCase _getDistrictsUseCase;
@@ -27,13 +28,8 @@ class HomePageController extends GetxController {
   final RxList<PlaceModel> featuredPlaces = <PlaceModel>[].obs;
   final RxBool isLoadingDistricts = true.obs;
   final RxBool isLoadingFeatured = true.obs;
-  final RxString searchQuery = ''.obs;
-  final TextEditingController searchController = TextEditingController();
-  final RxList<String> recentSearches = <String>[].obs;
-  final RxList<DistrictModel> filteredDistricts = <DistrictModel>[].obs;
 
   List<DistrictModel> get popularDistricts {
-    if (searchQuery.value.trim().isNotEmpty) return filteredDistricts;
     final sorted = [...districts]
       ..sort((a, b) => b.placeCount.compareTo(a.placeCount));
     return sorted.take(20).toList();
@@ -68,10 +64,8 @@ class HomePageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    recentSearches.value = getRecentSearches();
     _loadData();
     _location.requestAndRefresh();
-    ever(searchQuery, _filterDistricts);
   }
 
   Future<void> refreshLocation() => _location.requestAndRefresh();
@@ -94,10 +88,7 @@ class HomePageController extends GetxController {
     final result = await _getDistrictsUseCase.execute();
     result.fold(
       (failure) => log('Districts error: ${failure.message}'),
-      (data) {
-        districts.value = data;
-        filteredDistricts.value = data;
-      },
+      (data) => districts.value = data,
     );
     isLoadingDistricts.value = false;
   }
@@ -112,42 +103,24 @@ class HomePageController extends GetxController {
     isLoadingFeatured.value = false;
   }
 
-  void _filterDistricts(String query) {
-    if (query.trim().isEmpty) {
-      filteredDistricts.value = districts;
-      return;
-    }
-    final lower = query.toLowerCase();
-    filteredDistricts.value = districts.where((d) {
-      return d.name.toLowerCase().contains(lower) ||
-          d.nameBn.contains(query) ||
-          d.description.toLowerCase().contains(lower);
-    }).toList();
-  }
-
-  void onSearchChanged(String query) {
-    searchQuery.value = query;
-  }
-
-  void onSearchSubmit(String query) {
-    if (query.trim().isEmpty) return;
-    addRecentSearch(query);
-    recentSearches.value = getRecentSearches();
-    searchQuery.value = query;
-  }
-
-  void clearSearch() {
-    searchController.clear();
-    searchQuery.value = '';
-  }
-
   void toggleLanguage() {
     MyApp.isEnglish.value = !MyApp.isEnglish.value;
     saveLanguageIsEnglish(MyApp.isEnglish.value);
   }
 
-  void navigateToAllDistricts() {
-    Get.toNamed(AppRoutes.allDistricts);
+  void navigateToProfile() {
+    if (Get.isRegistered<TabbarController>()) {
+      Get.find<TabbarController>().changeTab(3);
+    } else {
+      Get.toNamed(AppRoutes.profile);
+    }
+  }
+
+  void navigateToAllDistricts({bool autofocusSearch = false}) {
+    Get.toNamed(
+      AppRoutes.allDistricts,
+      arguments: autofocusSearch ? {'autofocusSearch': true} : null,
+    );
   }
 
   void navigateToDistrictPlaces(DistrictModel district) {
@@ -167,9 +140,7 @@ class HomePageController extends GetxController {
     Get.toNamed(AppRoutes.categoryPlaces, arguments: categoryId);
   }
 
-  @override
-  void onClose() {
-    searchController.dispose();
-    super.onClose();
+  void navigateToFeaturedPlaces() {
+    Get.toNamed(AppRoutes.featuredPlaces);
   }
 }

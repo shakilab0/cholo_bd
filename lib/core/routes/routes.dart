@@ -31,6 +31,8 @@ import 'package:cholo_bd/feature/active_trip/active_trip_binding.dart';
 import 'package:cholo_bd/feature/all_districts/all_districts_page.dart';
 import 'package:cholo_bd/feature/category_places/category_places_page.dart';
 import 'package:cholo_bd/feature/category_places/category_places_binding.dart';
+import 'package:cholo_bd/feature/featured_places/featured_places_page.dart';
+import 'package:cholo_bd/feature/featured_places/featured_places_binding.dart';
 
 final List<GetPage> appRoutes = [
   GetPage(name: AppRoutes.splash, page: () => const SplashScreen()),
@@ -123,6 +125,11 @@ final List<GetPage> appRoutes = [
     page: () => const CategoryPlacesPage(),
     binding: CategoryPlacesBinding(),
   ),
+  GetPage(
+    name: AppRoutes.featuredPlaces,
+    page: () => const FeaturedPlacesPage(),
+    binding: FeaturedPlacesBinding(),
+  ),
 ];
 
 class AppRoutes {
@@ -146,4 +153,5 @@ class AppRoutes {
   static const String activeTrip = '/active-trip';
   static const String allDistricts = '/all-districts';
   static const String categoryPlaces = '/category-places';
+  static const String featuredPlaces = '/featured-places';
 }

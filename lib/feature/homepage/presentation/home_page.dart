@@ -9,7 +9,6 @@ import 'package:cholo_bd/core/services/location_service.dart';
 import 'package:cholo_bd/feature/homepage/presentation/home_page_controller.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/district_card.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/featured_slider.dart';
-import 'package:cholo_bd/feature/homepage/presentation/widgets/home_search_bar.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/quick_actions_row.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/season_banner.dart';
 
@@ -24,7 +23,6 @@ class HomePage extends GetView<HomePageController> {
         child: NestedScrollView(
           headerSliverBuilder: (_, __) => [
             SliverToBoxAdapter(child: _buildTopBar()),
-            SliverToBoxAdapter(child: HomeSearchBar(controller: controller)),
           ],
           body: RefreshIndicator(
             color: AppColor.primary,
@@ -41,7 +39,7 @@ class HomePage extends GetView<HomePageController> {
                 // Featured Places Slider
                 _sectionHeader(
                   title: AppStrings.featuredPlaces,
-                  onSeeAll: () {},
+                  onSeeAll: controller.navigateToFeaturedPlaces,
                 ),
 
                 Obx(() => controller.isLoadingFeatured.value
@@ -204,12 +202,27 @@ class HomePage extends GetView<HomePageController> {
                 ),
               )),
           const SizedBox(width: 8),
-          // Avatar
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: AppColor.bgCard,
-            child: const Icon(Icons.person_rounded,
+          IconButton(
+            onPressed: () =>
+                controller.navigateToAllDistricts(autofocusSearch: true),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            style: IconButton.styleFrom(
+              backgroundColor: AppColor.bgCard,
+              shape: const CircleBorder(),
+            ),
+            icon: const Icon(Icons.search_rounded,
                 color: AppColor.textSecondary, size: 20),
+          ),
+          const SizedBox(width: 4),
+          GestureDetector(
+            onTap: controller.navigateToProfile,
+            child: CircleAvatar(
+              radius: 18,
+              backgroundColor: AppColor.bgCard,
+              child: const Icon(Icons.person_rounded,
+                  color: AppColor.textSecondary, size: 20),
+            ),
           ),
         ],
       ),
@@ -265,7 +278,7 @@ class HomePage extends GetView<HomePageController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: AppTextStyle.sectionTitle),
-          if (showSeeAll != null && onSeeAll != null)
+          if (onSeeAll != null && showSeeAll != false)
             GestureDetector(
               onTap: onSeeAll,
               child: Text(AppStrings.seeAll,

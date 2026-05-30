@@ -17,18 +17,28 @@ class AllDistrictsPage extends StatefulWidget {
 
 class _AllDistrictsPageState extends State<AllDistrictsPage> {
   late HomePageController _homeCtrl;
+  late final bool _autofocusSearch;
   final TextEditingController _searchCtrl = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   final RxString _query = ''.obs;
 
   @override
   void initState() {
     super.initState();
     _homeCtrl = Get.find<HomePageController>();
+    final args = Get.arguments;
+    _autofocusSearch = args is Map && args['autofocusSearch'] == true;
+    if (_autofocusSearch) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _searchFocusNode.requestFocus();
+      });
+    }
   }
 
   @override
   void dispose() {
     _searchCtrl.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -64,6 +74,8 @@ class _AllDistrictsPageState extends State<AllDistrictsPage> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: TextField(
               controller: _searchCtrl,
+              focusNode: _searchFocusNode,
+              autofocus: _autofocusSearch,
               onChanged: (v) => _query.value = v,
               style: AppTextStyle.bodyMedium
                   .copyWith(color: AppColor.textPrimary),
