@@ -74,6 +74,15 @@ final List<TransportOptionModel> bangladeshTransports = const [
     description: 'Comfortable long-distance travel',
   ),
   TransportOptionModel(
+    id: 'air',
+    name: 'Air',
+    nameBn: 'বিমান',
+    icon: Icons.flight_rounded,
+    estimatedTime: '45 min – 2 hrs',
+    estimatedCost: '৳3000–15000',
+    description: 'Fastest for long-distance & island travel',
+  ),
+  TransportOptionModel(
     id: 'boat',
     name: 'Boat',
     nameBn: 'নৌকা / লঞ্চ',

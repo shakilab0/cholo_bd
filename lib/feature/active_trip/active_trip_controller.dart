@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cholo_bd/core/services/notification_service.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/trip_model.dart';
 import 'package:cholo_bd/feature/trip_planning/data/repositoryImpl/trip_repository_impl.dart';
@@ -51,6 +52,7 @@ class ActiveTripController extends GetxController {
       notes: trip.notes,
     );
     await _repository.updateTrip(updated);
+    NotificationService.instance.scheduleTripComplete(updated);
     Get.back();
     Get.snackbar(
       '🎉 Trip Complete!',

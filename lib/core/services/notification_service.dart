@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cholo_bd/core/services/trip_packing_service.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/trip_model.dart';
 
 class NotificationService {
@@ -32,39 +33,39 @@ class NotificationService {
     final now = DateTime.now();
     final tripDate = trip.tripDate;
 
-    // Cancel any existing notifications for this trip
     await cancelForTrip(trip.id);
 
     final baseId = trip.id.hashCode.abs() % 100000;
 
-    // D-3 reminder
-    final dMinus3 = tripDate.subtract(const Duration(days: 3));
-    if (dMinus3.isAfter(now)) {
+    // D-2 reminder
+    final dMinus2 = tripDate.subtract(const Duration(days: 2));
+    if (dMinus2.isAfter(now)) {
       await _schedule(
         id: baseId,
         title: '📅 Trip Reminder',
         body:
-            'Your trip to ${trip.districtName} is in 3 days — tap to review your itinerary.',
-        scheduledDate: dMinus3.copyWith(hour: 9, minute: 0, second: 0),
+            'Your trip to ${trip.districtName} is in 2 days — tap to review your itinerary.',
+        scheduledDate: dMinus2.copyWith(hour: 9, minute: 0, second: 0),
       );
     }
 
     // D-1 weather/packing alert
     final dMinus1 = tripDate.subtract(const Duration(days: 1));
     if (dMinus1.isAfter(now)) {
+      final body =
+          await TripPackingService.instance.buildD1NotificationBody(trip);
       await _schedule(
         id: baseId + 1,
         title: '🎒 Pack & Get Ready',
-        body:
-            'Your trip to ${trip.districtName} is tomorrow! Check your packing list.',
+        body: body,
         scheduledDate: dMinus1.copyWith(hour: 20, minute: 0, second: 0),
       );
     }
 
     // Transport-aware departure alert
-    final departureOffset = _departureOffset(trip.transport.id);
+    final departureMinutes = _departureOffsetMinutes(trip.transport.id);
     final departureAlert =
-        tripDate.subtract(Duration(hours: departureOffset));
+        tripDate.subtract(Duration(minutes: departureMinutes));
     if (departureAlert.isAfter(now)) {
       await _schedule(
         id: baseId + 2,
@@ -126,23 +127,27 @@ class NotificationService {
   // ignore: deprecated_member_use
   dynamic _toTZDateTime(DateTime dt) => dt;
 
-  int _departureOffset(String transportId) {
+  int _departureOffsetMinutes(String transportId) {
     switch (transportId) {
+      case 'air':
+        return 270; // 4.5 hours
       case 'train':
-        return 2;
+        return 120;
       case 'bus':
-        return 3;
+        return 180;
       case 'boat':
-        return 3;
+        return 180;
       case 'private_car':
-        return 2;
+        return 120;
       default:
-        return 1;
+        return 60;
     }
   }
 
   String _departureMessage(String transportId, String districtName) {
     switch (transportId) {
+      case 'air':
+        return 'Time to head to the airport for your trip to $districtName!';
       case 'train':
         return 'Time to head to the station for your trip to $districtName!';
       case 'bus':

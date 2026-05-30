@@ -39,6 +39,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Report PDF generator virtualenv
+docs/.venv/
+
 # Appwrite upload tools — never commit secrets
 tools/**/.env
 .env

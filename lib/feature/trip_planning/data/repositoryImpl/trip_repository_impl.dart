@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:cholo_bd/config/constant/apwrite_constant.dart';
 import 'package:cholo_bd/core/failure/failure.dart';
 import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
+import 'package:cholo_bd/core/services/notification_service.dart';
 import 'package:cholo_bd/dio_helper/appwrite_provider.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/trip_planning/data/model/transport_option_model.dart';
@@ -188,6 +189,8 @@ class TripRepositoryImpl implements TripRepository {
 
   @override
   Future<Either<Failure, Unit>> deleteTrip(String tripId) async {
+    await NotificationService.instance.cancelForTrip(tripId);
+
     // Delete from local cache
     try {
       final current = getTripsFromCache();

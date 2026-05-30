@@ -111,6 +111,10 @@ def parse_markdown(path: Path) -> list[tuple[str, str]]:
     return blocks
 
 
+def reset_x(pdf: ReportPDF) -> None:
+    pdf.set_x(pdf.l_margin)
+
+
 def render_table(pdf: ReportPDF, raw: str) -> None:
     rows = []
     for line in raw.splitlines():
@@ -119,25 +123,37 @@ def render_table(pdf: ReportPDF, raw: str) -> None:
     if not rows:
         return
     col_count = max(len(r) for r in rows)
-    width = (pdf.w - pdf.l_margin - pdf.r_margin) / col_count
-    pdf.set_font("Helvetica", "", 8)
+    page_w = pdf.epw
+    col_widths = [page_w / col_count] * col_count
+    # Wider first column for 2-column key-value tables
+    if col_count == 2:
+        col_widths = [page_w * 0.28, page_w * 0.72]
+    row_h = 6
+    pdf.set_font("Helvetica", "", 7)
     for ri, row in enumerate(rows):
+        reset_x(pdf)
         if ri == 0:
             pdf.set_fill_color(34, 139, 87)
             pdf.set_text_color(255, 255, 255)
-            pdf.set_font("Helvetica", "B", 8)
+            pdf.set_font("Helvetica", "B", 7)
         else:
             pdf.set_fill_color(245, 248, 246)
             pdf.set_text_color(30, 30, 30)
-            pdf.set_font("Helvetica", "", 8)
+            pdf.set_font("Helvetica", "", 7)
+        start_y = pdf.get_y()
+        max_y = start_y
         for ci in range(col_count):
-            cell = row[ci] if ci < len(row) else ""
-            pdf.cell(width, 7, cell[:40], border=1, fill=True)
-        pdf.ln()
+            cell = safe_text(row[ci] if ci < len(row) else "")
+            cw = col_widths[ci]
+            pdf.set_xy(pdf.l_margin + sum(col_widths[:ci]), start_y)
+            pdf.multi_cell(cw, row_h, cell, border=1, fill=True, max_line_height=row_h)
+            max_y = max(max_y, pdf.get_y())
+        pdf.set_y(max_y)
+    reset_x(pdf)
 
 
 def safe_text(text: str) -> str:
-    """Replace Unicode chars unsupported by core Helvetica."""
+    """Replace Unicode chars unsupported by core Helvetica (avoid '?' placeholders)."""
     replacements = {
         "\u2013": "-",
         "\u2014": "-",
@@ -149,11 +165,27 @@ def safe_text(text: str) -> str:
         "\u2192": "->",
         "\u2264": "<=",
         "\u2265": ">=",
-        "\u09e7": "1",  # Bengali digits if any slip through
+        # Directory tree (box-drawing) -> ASCII
+        "\u251c\u2500\u2500": "|--",
+        "\u2514\u2500\u2500": "`--",
+        "\u2502   ": "|   ",
+        "\u2502": "|",
+        "\u2500": "-",
     }
     for k, v in replacements.items():
         text = text.replace(k, v)
-    return text.encode("latin-1", errors="replace").decode("latin-1")
+    # Fallback: any remaining non-latin-1 -> strip or ASCII substitute
+    out = []
+    for ch in text:
+        try:
+            ch.encode("latin-1")
+            out.append(ch)
+        except UnicodeEncodeError:
+            if ch in "├└│─":
+                out.append("|")
+            else:
+                out.append(" ")
+    return "".join(out)
 
 
 def build_cover(pdf: ReportPDF, title: str, subtitle: str, meta_lines: list[str]) -> None:
@@ -215,6 +247,7 @@ def build_pdf(blocks: list[tuple[str, str]]) -> None:
         if skip_until_h1:
             if kind == "h1" and "abstract" in content.lower():
                 skip_until_h1 = False
+                pdf.add_page()
             else:
                 continue
 
@@ -223,37 +256,46 @@ def build_pdf(blocks: list[tuple[str, str]]) -> None:
 
         w = pdf.epw
         content = safe_text(content)
+        reset_x(pdf)
         if kind == "h1":
             if content.lower().startswith("table of contents"):
                 pdf.add_page()
+                reset_x(pdf)
             pdf.ln(4)
             pdf.set_font("Helvetica", "B", 14)
             pdf.set_text_color(22, 101, 52)
             pdf.multi_cell(w, 8, content)
             pdf.ln(2)
+            reset_x(pdf)
         elif kind == "h2":
             pdf.ln(2)
             pdf.set_font("Helvetica", "B", 11)
             pdf.set_text_color(40, 40, 40)
             pdf.multi_cell(w, 7, content)
             pdf.ln(1)
+            reset_x(pdf)
         elif kind == "table":
             pdf.ln(2)
-            render_table(pdf, content)
+            render_table(pdf, safe_text(content))
             pdf.ln(3)
+            reset_x(pdf)
         elif kind == "bullet":
             pdf.set_font("Helvetica", "", 10)
             pdf.set_text_color(50, 50, 50)
             for item in content.split("\n"):
+                reset_x(pdf)
                 pdf.multi_cell(w, 5, f"  - {safe_text(item)}")
             pdf.ln(2)
+            reset_x(pdf)
         elif kind == "code":
-            pdf.set_font("Courier", "", 8)
+            pdf.set_font("Courier", "", 7)
             pdf.set_fill_color(240, 240, 240)
             pdf.set_text_color(30, 30, 30)
-            for line in content.split("\n")[:12]:
-                pdf.cell(0, 5, line[:90], ln=True, fill=True)
+            for line in content.split("\n"):
+                reset_x(pdf)
+                pdf.multi_cell(w, 4.5, safe_text(line), fill=True)
             pdf.ln(2)
+            reset_x(pdf)
         elif kind == "body":
             if content.startswith("**Project Type:**") or "University" in content[:80]:
                 pdf.set_font("Helvetica", "", 11)
@@ -261,8 +303,11 @@ def build_pdf(blocks: list[tuple[str, str]]) -> None:
             else:
                 pdf.set_font("Helvetica", "", 10)
                 pdf.set_text_color(50, 50, 50)
-            pdf.multi_cell(w, 5, safe_text(content))
+            # Break very long words so multi_cell can wrap inside margins
+            wrapped = re.sub(r"(\S{60})(\S)", r"\1 \2", content)
+            pdf.multi_cell(w, 5, wrapped)
             pdf.ln(1)
+            reset_x(pdf)
 
     # Cover subtitle after first title block handled — add metadata page elements
     pdf.output(str(PDF_PATH))

@@ -3,7 +3,7 @@
 
 ---
 
-**Project Type:** University Final Year / Semester Project  
+**Project Type:** 7th Semester Project  
 **Platform:** Android & iOS (Cross-platform)  
 **Technology Stack:** Flutter, Dart, Appwrite BaaS, Google APIs, Gemini AI  
 **Version:** 1.0.0  
@@ -213,24 +213,24 @@ The project follows **feature-based Clean Architecture**:
 
 ```
 lib/
-├── app/                    # MyApp, global theme
-├── config/                 # Colors, API keys, constants
-├── core/                   # Routes, DI, services, Hive, failures
-├── dio_helper/             # Appwrite client provider
-└── feature/
-    ├── auth/
-    ├── homepage/           # data / domain / presentation
-    ├── trip_planning/
-    ├── trips/
-    ├── trip_details/
-    ├── active_trip/
-    ├── place_details/
-    ├── district_places/
-    ├── map/
-    ├── profile/
-    ├── onboarding/
-    ├── splash_screen/
-    └── tabbar/
+|-- app/                    # MyApp, global theme
+|-- config/                 # Colors, API keys, constants
+|-- core/                   # Routes, DI, services, Hive, failures
+|-- dio_helper/             # Appwrite client provider
+`-- feature/
+    |-- auth/
+    |-- homepage/           # data / domain / presentation
+    |-- trip_planning/
+    |-- trips/
+    |-- trip_details/
+    |-- active_trip/
+    |-- place_details/
+    |-- district_places/
+    |-- map/
+    |-- profile/
+    |-- onboarding/
+    |-- splash_screen/
+    `-- tabbar/
 ```
 
 **Layers per feature:**
@@ -692,14 +692,14 @@ The modular codebase (~94 Dart files in `lib/`) is maintainable and extensible f
 
 ```
 cholo_bd/
-├── android/                 # Android native config
-├── ios/                     # iOS native config
-├── assets/images/           # Static assets
-├── docs/                    # API_KEYS.md, this report
-├── lib/                     # Application source (94 .dart files)
-├── test/                    # Widget tests
-├── tools/upload_places/     # Data seeding scripts
-└── pubspec.yaml             # Dependencies
+|-- android/                 # Android native config
+|-- ios/                     # iOS native config
+|-- assets/images/           # Static assets
+|-- docs/                    # API_KEYS.md, this report
+|-- lib/                     # Application source (94 .dart files)
+|-- test/                    # Widget tests
+|-- tools/upload_places/     # Data seeding scripts
+`-- pubspec.yaml             # Dependencies
 ```
 
 ### B. Run Instructions
@@ -719,7 +719,7 @@ flutter build apk --release \
   --dart-define=GOOGLE_MAPS_API_KEY=xxx
 ```
 
-### C. Screens Overview (For Demo / Viva)
+### C. Screens Overview 
 
 1. **Splash** — Brand logo, session check  
 2. **Onboarding** — App intro, name, preferences  
@@ -731,28 +731,13 @@ flutter build apk --release \
 8. **Map** — Geographic discovery  
 9. **Profile** — User settings, logout  
 
-### D. Viva Questions & Sample Answers
 
-**Q: Why Flutter?**  
-A: Single codebase for Android/iOS, hot reload for fast university development, rich widget ecosystem.
-
-**Q: Why Appwrite instead of Firebase?**  
-A: Open-source BaaS, self-hostable, integrated auth/database/storage with straightforward Dart SDK.
-
-**Q: Why use AI for transport?**  
-A: Rule-only systems fail on edge cases (boat vs inland water); LLM encodes geographic common sense with structured JSON output.
-
-**Q: How is offline handled?**  
-A: Hive caches districts, places, and trips; repository reads cache first; seed data as last resort.
-
----
-
-**Submitted by:** _________________________  
-**Student ID:** _________________________  
-**Department:** _________________________  
-**University:** _________________________  
-**Supervisor:** _________________________  
-**Date:** May 2026  
+**Submitted by:** Frozen programmer 
+**Student ID:** 39,3,4,6,8,4,17,20,22,23,26,28,34,36,40,41
+**Department:** CSE
+**University:** Dhaka International University.
+**Supervisor:** Md. Mohiuddin Hasan.
+**Date:** June 2026  
 
 ---
 

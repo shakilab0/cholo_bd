@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:cholo_bd/config/api_keys.dart';
+
 class TransportFilterResult {
   final List<String> availableIds;
   final Map<String, String> unavailableReasons;
@@ -20,9 +21,36 @@ class GeminiTransportFilterService {
     'cng',
     'bus',
     'train',
+    'air',
     'boat',
     'private_car',
   ];
+
+  /// Districts where boat/launch routes are commonly used for travel.
+  static const _boatRouteDistrictIds = {
+    'khulna',
+    'bagerhat',
+    'satkhira',
+    'barishal',
+    'bhola',
+    'jhalokati',
+    'patuakhali',
+    'pirojpur',
+    'barguna',
+    'shariatpur',
+    'madaripur',
+    'chandpur',
+    'gopalganj',
+    'rangamati',
+    'bandarban',
+    'coxs-bazar',
+    'chittagong',
+    'sunamganj',
+    'kishoreganj',
+    'narail',
+    'lakshmipur',
+    'noakhali',
+  };
 
   Future<TransportFilterResult> filterFeasibleTransports({
     required LatLng origin,
@@ -30,47 +58,64 @@ class GeminiTransportFilterService {
     required String startLabel,
     required String destinationName,
     required String districtName,
+    String? districtId,
+    bool destinationRequiresBoat = false,
   }) async {
     final distanceKm = _haversineKm(origin, destination);
+    final hasBoatRoute = _hasBoatRoute(
+      districtId: districtId,
+      districtName: districtName,
+      destinationRequiresBoat: destinationRequiresBoat,
+    );
 
-    if (!ApiKeys.hasGemini) {
-      return _fallbackFilter(distanceKm);
-    }
-
-    try {
-      final model = GenerativeModel(
-        model: 'gemini-2.0-flash',
-        apiKey: ApiKeys.gemini,
-      );
-      final prompt = '''
+    if (ApiKeys.hasGemini) {
+      try {
+        final model = GenerativeModel(
+          model: 'gemini-2.0-flash',
+          apiKey: ApiKeys.gemini,
+        );
+        final prompt = '''
 You are a Bangladesh travel expert. Given a trip route, decide which transport modes are realistically usable.
 
 Origin: $startLabel (${origin.latitude.toStringAsFixed(4)}, ${origin.longitude.toStringAsFixed(4)})
 Destination: $destinationName, $districtName (${destination.latitude.toStringAsFixed(4)}, ${destination.longitude.toStringAsFixed(4)})
 Straight-line distance: ${distanceKm.toStringAsFixed(1)} km
+Boat route likely: $hasBoatRoute
 
 Transport modes (ids): ${_allIds.join(', ')}
 
-Rules:
-- Rickshaw/CNG: only for short urban trips (typically under 15-20 km).
-- Boat: only where river/sea routes exist (e.g. Sundarbans, river districts); NOT for inland Dhaka suburbs like Savar to Mirpur.
-- Train/Bus: inter-city or longer routes.
-- private_car: usually available if roads exist.
+Distance rules (must follow):
+- Within 15 km: all modes allowed (including rickshaw and CNG).
+- Under 80 km: all except rickshaw (rickshaw only within 15 km).
+- 80 km and above: all except rickshaw and CNG.
+- Boat: only where river/sea/launch routes exist; never for typical inland road-only trips.
 
 Reply with ONLY valid JSON, no markdown:
 {"available":["id1","id2"],"unavailable":[{"id":"boat","reason":"short reason in English"}]}
 ''';
 
-      final response = await model.generateContent([Content.text(prompt)]);
-      final text = response.text?.trim() ?? '';
-      return _parseResponse(text, distanceKm);
-    } catch (e) {
-      log('GeminiTransportFilterService error: $e');
-      return _fallbackFilter(distanceKm);
+        final response = await model.generateContent([Content.text(prompt)]);
+        final text = response.text?.trim() ?? '';
+        final parsed = _parseResponse(text);
+        if (parsed != null) {
+          return _enforceRules(
+            distanceKm: distanceKm,
+            hasBoatRoute: hasBoatRoute,
+            geminiUnavailable: parsed.unavailableReasons,
+          );
+        }
+      } catch (e) {
+        log('GeminiTransportFilterService error: $e');
+      }
     }
+
+    return _ruleBasedFilter(
+      distanceKm: distanceKm,
+      hasBoatRoute: hasBoatRoute,
+    );
   }
 
-  TransportFilterResult _parseResponse(String text, double distanceKm) {
+  TransportFilterResult? _parseResponse(String text) {
     try {
       var jsonStr = text;
       final fence = RegExp(r'```(?:json)?\s*([\s\S]*?)```');
@@ -78,9 +123,6 @@ Reply with ONLY valid JSON, no markdown:
       if (match != null) jsonStr = match.group(1)!.trim();
 
       final map = jsonDecode(jsonStr) as Map<String, dynamic>;
-      final available = List<String>.from(map['available'] ?? [])
-          .where((id) => _allIds.contains(id))
-          .toList();
       final unavailable = <String, String>{};
       for (final item in map['unavailable'] as List? ?? []) {
         if (item is Map) {
@@ -91,32 +133,39 @@ Reply with ONLY valid JSON, no markdown:
           }
         }
       }
-      if (available.isEmpty) {
-        return _fallbackFilter(distanceKm);
-      }
-      for (final id in unavailable.keys) {
-        available.remove(id);
-      }
-      return TransportFilterResult(
-        availableIds: available,
-        unavailableReasons: unavailable,
-      );
+      return TransportFilterResult(availableIds: const [], unavailableReasons: unavailable);
     } catch (e) {
       log('Gemini parse error: $e — text: $text');
-      return _fallbackFilter(distanceKm);
+      return null;
     }
   }
 
-  TransportFilterResult _fallbackFilter(double distanceKm) {
+  TransportFilterResult _enforceRules({
+    required double distanceKm,
+    required bool hasBoatRoute,
+    Map<String, String>? geminiUnavailable,
+  }) {
+    return _ruleBasedFilter(
+      distanceKm: distanceKm,
+      hasBoatRoute: hasBoatRoute,
+      geminiUnavailable: geminiUnavailable,
+    );
+  }
+
+  TransportFilterResult _ruleBasedFilter({
+    required double distanceKm,
+    required bool hasBoatRoute,
+    Map<String, String>? geminiUnavailable,
+  }) {
     final available = <String>[];
     final unavailable = <String, String>{};
 
     for (final id in _allIds) {
-      final ok = _fallbackIsAvailable(id, distanceKm);
-      if (ok) {
+      if (_isAvailableByRules(id, distanceKm, hasBoatRoute)) {
         available.add(id);
       } else {
-        unavailable[id] = _fallbackReason(id, distanceKm);
+        unavailable[id] = geminiUnavailable?[id] ??
+            _unavailableReason(id, distanceKm, hasBoatRoute);
       }
     }
 
@@ -126,29 +175,51 @@ Reply with ONLY valid JSON, no markdown:
     );
   }
 
-  bool _fallbackIsAvailable(String id, double distanceKm) {
+  bool _isAvailableByRules(
+    String id,
+    double distanceKm,
+    bool hasBoatRoute,
+  ) {
     switch (id) {
       case 'rickshaw':
-        return distanceKm <= 25;
-      case 'boat':
+        return distanceKm <= 15;
       case 'cng':
-        return distanceKm > 80;
-      case 'bus':
-      case 'train':
-      case 'private_car':
-        return true;
+        return distanceKm < 80;
+      case 'boat':
+        return hasBoatRoute;
       default:
         return true;
     }
   }
 
-  String _fallbackReason(String id, double distanceKm) {
+  bool _hasBoatRoute({
+    String? districtId,
+    required String districtName,
+    required bool destinationRequiresBoat,
+  }) {
+    if (destinationRequiresBoat) return true;
+    if (districtId != null && _boatRouteDistrictIds.contains(districtId)) {
+      return true;
+    }
+    final normalized = districtName.toLowerCase();
+    if (normalized.contains('sundarbans')) return true;
+    return false;
+  }
+
+  String _unavailableReason(
+    String id,
+    double distanceKm,
+    bool hasBoatRoute,
+  ) {
     switch (id) {
       case 'rickshaw':
+        return 'Rickshaw only for trips within 15 km (${distanceKm.toStringAsFixed(0)} km)';
       case 'cng':
-        return 'Too far for $id (${distanceKm.toStringAsFixed(0)} km)';
+        return 'CNG only for trips under 80 km (${distanceKm.toStringAsFixed(0)} km)';
       case 'boat':
-        return 'No practical boat route for this trip';
+        return hasBoatRoute
+            ? 'No practical boat route for this trip'
+            : 'No boat route to this destination';
       default:
         return 'Not available';
     }

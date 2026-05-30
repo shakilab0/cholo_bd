@@ -47,7 +47,8 @@ class TripsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   itemCount: trips.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (_, i) => _TripCard(trip: trips[i]),
+                  itemBuilder: (_, i) =>
+                      _TripCard(trip: trips[i], controller: controller),
                 ),
               );
             }),
@@ -128,7 +129,8 @@ class _FilterChip extends StatelessWidget {
 
 class _TripCard extends StatelessWidget {
   final TripModel trip;
-  const _TripCard({required this.trip});
+  final TripsController controller;
+  const _TripCard({required this.trip, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +142,9 @@ class _TripCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => Get.toNamed(AppRoutes.tripDetails, arguments: trip),
+      onLongPress: controller.canCancelTrip(trip)
+          ? () => controller.confirmCancelTrip(trip)
+          : null,
       child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

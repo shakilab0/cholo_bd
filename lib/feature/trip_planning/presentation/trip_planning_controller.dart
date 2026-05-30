@@ -387,6 +387,9 @@ class TripPlanningController extends GetxController {
       );
     }
 
+    final hasBoatTag =
+        selectedPlaces.any((p) => p.tags.contains('boat'));
+
     final filter = await _gemini.filterFeasibleTransports(
       origin: start,
       destination: dest,
@@ -395,6 +398,8 @@ class TripPlanningController extends GetxController {
           : 'Current location',
       destinationName: destName,
       districtName: district?.name ?? '',
+      districtId: district?.id,
+      destinationRequiresBoat: hasBoatTag,
     );
 
     final estimates = <String, TransportEstimate>{};

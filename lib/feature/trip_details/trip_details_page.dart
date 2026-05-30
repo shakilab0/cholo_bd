@@ -53,7 +53,7 @@ class TripDetailsPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: _BottomActions(trip: trip),
+      bottomNavigationBar: _BottomActions(trip: trip, controller: c),
     );
   }
 }
@@ -339,15 +339,70 @@ class _TransportCard extends StatelessWidget {
 
 class _BottomActions extends StatelessWidget {
   final TripModel trip;
-  const _BottomActions({required this.trip});
+  final TripDetailsController controller;
+  const _BottomActions({required this.trip, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     if (trip.status == TripStatus.completed) return const SizedBox.shrink();
 
+    final bottomPad = 12 + MediaQuery.of(context).padding.bottom;
+
+    if (trip.status == TripStatus.upcoming) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPad),
+        decoration: const BoxDecoration(
+          color: AppColor.bgCard,
+          border: Border(top: BorderSide(color: AppColor.border)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: controller.confirmCancelTrip,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.redAccent,
+                  side: const BorderSide(color: Colors.redAccent),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                ),
+                icon: const Icon(Icons.cancel_outlined, size: 20),
+                label: Text(
+                  'Cancel Trip',
+                  style: AppTextStyle.sectionTitle
+                      .copyWith(color: Colors.redAccent),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: ElevatedButton.icon(
+                onPressed: () =>
+                    Get.toNamed(AppRoutes.activeTrip, arguments: trip),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.primary,
+                  foregroundColor: AppColor.inkDark,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                ),
+                icon: const Icon(Icons.play_circle_rounded, size: 20),
+                label: Text(
+                  'Start Trip',
+                  style: AppTextStyle.sectionTitle
+                      .copyWith(color: AppColor.inkDark),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.fromLTRB(
-          16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPad),
       decoration: const BoxDecoration(
         color: AppColor.bgCard,
         border: Border(top: BorderSide(color: AppColor.border)),
@@ -364,7 +419,7 @@ class _BottomActions extends StatelessWidget {
         ),
         icon: const Icon(Icons.play_circle_rounded, size: 20),
         label: Text(
-          trip.status == TripStatus.active ? 'Continue Trip' : 'Start Trip',
+          'Continue Trip',
           style: AppTextStyle.sectionTitle.copyWith(color: AppColor.inkDark),
         ),
       ),
