@@ -132,8 +132,12 @@ class HomePageController extends GetxController {
   }
 
   void navigateToTripPlanning({DistrictModel? district}) {
-    Get.toNamed(AppRoutes.tripPlanning,
-        arguments: district != null ? {'district': district} : null);
+    if (district != null) {
+      Get.toNamed(AppRoutes.tripPlanningPlaces,
+          arguments: {'district': district});
+    } else {
+      Get.toNamed(AppRoutes.tripPlanningDistrict);
+    }
   }
 
   void navigateToCategoryPlaces(String categoryId) {

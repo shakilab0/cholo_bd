@@ -44,6 +44,6 @@ class CategoryPlacesController extends GetxController {
   }
 
   void navigateToTripPlanning() {
-    Get.toNamed(AppRoutes.tripPlanning);
+    Get.toNamed(AppRoutes.tripPlanningDistrict);
   }
 }

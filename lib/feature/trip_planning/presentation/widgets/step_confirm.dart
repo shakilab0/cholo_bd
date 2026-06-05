@@ -5,9 +5,37 @@ import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/feature/trip_planning/presentation/trip_planning_controller.dart';
 
-class StepConfirm extends StatelessWidget {
+class StepConfirm extends StatefulWidget {
   final TripPlanningController controller;
   const StepConfirm({super.key, required this.controller});
+
+  @override
+  State<StepConfirm> createState() => _StepConfirmState();
+}
+
+class _StepConfirmState extends State<StepConfirm> {
+  late final TextEditingController _tripNameCtrl;
+
+  TripPlanningController get controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final district = controller.selectedDistrict.value;
+    _tripNameCtrl = TextEditingController(
+      text: district != null ? 'Trip to ${district.name}' : '',
+    );
+    controller.tripName.value = _tripNameCtrl.text;
+    _tripNameCtrl.addListener(() {
+      controller.tripName.value = _tripNameCtrl.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    _tripNameCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,58 +47,29 @@ class StepConfirm extends StatelessWidget {
           const SizedBox(height: 4),
           Text('Review your trip', style: AppTextStyle.heading3),
           const SizedBox(height: 20),
-          _TripNameField(controller: controller),
+          _tripNameField(),
           const SizedBox(height: 16),
-          _SummaryCard(controller: controller),
+          _summaryCard(),
           const SizedBox(height: 16),
-          _PlacesList(controller: controller),
+          _placesList(),
         ],
       ),
     );
   }
-}
 
-class _TripNameField extends StatefulWidget {
-  final TripPlanningController controller;
-  const _TripNameField({required this.controller});
-
-  @override
-  State<_TripNameField> createState() => _TripNameFieldState();
-}
-
-class _TripNameFieldState extends State<_TripNameField> {
-  late final TextEditingController _textCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    final district = widget.controller.selectedDistrict.value;
-    _textCtrl = TextEditingController(
-      text: district != null ? 'Trip to ${district.name}' : '',
-    );
-    widget.controller.tripName.value = _textCtrl.text;
-    _textCtrl.addListener(() {
-      widget.controller.tripName.value = _textCtrl.text;
-    });
-  }
-
-  @override
-  void dispose() {
-    _textCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _tripNameField() {
     return TextField(
-      controller: _textCtrl,
+      controller: _tripNameCtrl,
       style: AppTextStyle.sectionTitle,
       maxLength: 50,
       decoration: InputDecoration(
         labelText: 'Trip name',
-        labelStyle: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
-        counterStyle: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
-        prefixIcon: const Icon(Icons.edit_rounded, color: AppColor.primary, size: 18),
+        labelStyle:
+            AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
+        counterStyle:
+            AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
+        prefixIcon:
+            const Icon(Icons.edit_rounded, color: AppColor.primary, size: 18),
         filled: true,
         fillColor: AppColor.bgCard,
         border: OutlineInputBorder(
@@ -88,14 +87,8 @@ class _TripNameFieldState extends State<_TripNameField> {
       ),
     );
   }
-}
 
-class _SummaryCard extends StatelessWidget {
-  final TripPlanningController controller;
-  const _SummaryCard({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _summaryCard() {
     return Obx(() {
       final district = controller.selectedDistrict.value;
       final date = controller.selectedDate.value;
@@ -111,47 +104,48 @@ class _SummaryCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _SummaryRow(
+            _summaryRow(
               icon: Icons.location_on_rounded,
               label: 'District',
               value: district?.name ?? '—',
             ),
             if (controller.startLocationLabel.value.isNotEmpty) ...[
-              const _Divider(),
-              _SummaryRow(
+              _divider(),
+              _summaryRow(
                 icon: Icons.my_location_rounded,
                 label: 'Start',
                 value: controller.startLocationLabel.value,
               ),
             ],
             if (controller.selectedPlaces.isNotEmpty) ...[
-              const _Divider(),
-              _SummaryRow(
+              _divider(),
+              _summaryRow(
                 icon: Icons.flag_rounded,
                 label: 'Destination',
                 value: controller.destinationPlaceName,
               ),
             ],
-            const _Divider(),
-            _SummaryRow(
+            _divider(),
+            _summaryRow(
               icon: Icons.place_rounded,
               label: 'Places',
-              value: '${places.length} place${places.length == 1 ? '' : 's'} · ${controller.estimatedDuration}',
+              value:
+                  '${places.length} place${places.length == 1 ? '' : 's'} · ${controller.estimatedDuration}',
             ),
-            const _Divider(),
-            _SummaryRow(
+            _divider(),
+            _summaryRow(
               icon: Icons.event_rounded,
               label: 'Date',
               value: DateFormat('EEE, d MMM yyyy').format(date),
             ),
-            const _Divider(),
-            _SummaryRow(
+            _divider(),
+            _summaryRow(
               icon: Icons.schedule_rounded,
               label: 'Start time',
               value: controller.startTimeLabel,
             ),
-            const _Divider(),
-            _SummaryRow(
+            _divider(),
+            _summaryRow(
               icon: transport?.icon ?? Icons.directions_bus_rounded,
               label: 'Transport',
               value: transport != null
@@ -163,49 +157,41 @@ class _SummaryCard extends StatelessWidget {
       );
     });
   }
-}
 
-class _SummaryRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  const _SummaryRow({required this.icon, required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _summaryRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppColor.primary),
           const SizedBox(width: 12),
-          Text(label,
-              style: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary)),
+          Text(
+            label,
+            style: AppTextStyle.labelSmall
+                .copyWith(color: AppColor.textSecondary),
+          ),
           const Spacer(),
-          Text(value,
-              style: AppTextStyle.labelSmall.copyWith(
-                  color: AppColor.textPrimary, fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: AppTextStyle.labelSmall.copyWith(
+              color: AppColor.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
   }
-}
 
-class _Divider extends StatelessWidget {
-  const _Divider();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _divider() {
     return const Divider(color: AppColor.border, height: 1);
   }
-}
 
-class _PlacesList extends StatelessWidget {
-  final TripPlanningController controller;
-  const _PlacesList({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _placesList() {
     return Obx(() {
       final places = controller.selectedPlaces;
       if (places.isEmpty) return const SizedBox.shrink();
@@ -213,8 +199,11 @@ class _PlacesList extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Itinerary',
-              style: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary)),
+          Text(
+            'Itinerary',
+            style:
+                AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
+          ),
           const SizedBox(height: 10),
           ...places.asMap().entries.map((entry) {
             final idx = entry.key;
@@ -231,22 +220,29 @@ class _PlacesList extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Text('${idx + 1}',
-                          style: AppTextStyle.labelSmall.copyWith(
-                              color: AppColor.primary,
-                              fontWeight: FontWeight.w700)),
+                      child: Text(
+                        '${idx + 1}',
+                        style: AppTextStyle.labelSmall.copyWith(
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(place.name,
-                        style: AppTextStyle.sectionTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      place.name,
+                      style: AppTextStyle.sectionTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  Text(place.visitDuration,
-                      style: AppTextStyle.labelSmall.copyWith(
-                          color: AppColor.textSecondary)),
+                  Text(
+                    place.visitDuration,
+                    style: AppTextStyle.labelSmall
+                        .copyWith(color: AppColor.textSecondary),
+                  ),
                 ],
               ),
             );

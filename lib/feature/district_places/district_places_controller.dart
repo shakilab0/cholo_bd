@@ -83,6 +83,7 @@ class DistrictPlacesController extends GetxController {
   }
 
   void startTripHere() {
-    Get.toNamed(AppRoutes.tripPlanning, arguments: {'district': district});
+    Get.toNamed(AppRoutes.tripPlanningPlaces,
+        arguments: {'district': district});
   }
 }

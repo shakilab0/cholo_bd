@@ -40,7 +40,6 @@ class TripPlanningController extends GetxController {
   GoogleRoutesService get _routes => Get.find<GoogleRoutesService>();
 
   // Steps: 0=District, 1=Places, 2=DateTime, 3=Transport, 4=Confirm
-  final RxInt currentStep = 0.obs;
   static const int totalSteps = 5;
 
   final RxList<DistrictModel> districts = <DistrictModel>[].obs;
@@ -146,7 +145,6 @@ class TripPlanningController extends GetxController {
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args['district'] != null) {
       selectedDistrict.value = args['district'] as DistrictModel;
-      if (currentStep.value == 0) currentStep.value = 1;
     }
     selectedTransport.value = bangladeshTransports.first;
     _syncStartLabel();
@@ -163,9 +161,6 @@ class TripPlanningController extends GetxController {
     ever(selectedStartSubDistrict, (_) {
       _syncStartLabel();
       _clearTransportEstimates();
-    });
-    ever(currentStep, (int step) {
-      if (step == 3) loadTransportEstimates();
     });
     if (selectedDistrict.value != null) {
       _loadPlacesForDistrict(selectedDistrict.value!.id);
@@ -499,56 +494,76 @@ class TripPlanningController extends GetxController {
 
   double _toRad(double deg) => deg * math.pi / 180.0;
 
-  void nextStep() {
-    if (currentStep.value == 2 && !canProceedStep2) {
-      final en = MyApp.isEnglish.value;
-      if (!isStartTimeValid) {
-        Get.snackbar(
-          en ? 'Invalid start time' : 'ভুল শুরুর সময়',
-          en
-              ? 'Pick a start time that is still in the future.'
-              : 'এমন একটি সময় বেছে নিন যা এখনো আসেনি।',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        return;
-      }
-      if (useCurrentLocationAsStart.value) {
-        Get.snackbar(
-          en ? 'Location required' : 'লোকেশন প্রয়োজন',
-          en
-              ? 'Enable location to use your current position as the trip start.'
-              : 'ট্রিপ শুরু করতে বর্তমান লোকেশন চালু করুন।',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      } else {
-        Get.snackbar(
-          en ? 'Start location required' : 'শুরুর লোকেশন প্রয়োজন',
-          en
-              ? 'Select a district and sub-district for your trip start.'
-              : 'ট্রিপ শুরুর জন্য জেলা ও উপজেলা বেছে নিন।',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
+  void goToNextStep(int stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        goToPlaces();
+      case 1:
+        goToDatetime();
+      case 2:
+        goToTransport();
+      case 3:
+        goToConfirm();
+    }
+  }
+
+  void goToPlaces() {
+    if (!canProceedStep0) return;
+    Get.toNamed(AppRoutes.tripPlanningPlaces);
+  }
+
+  void goToDatetime() {
+    if (!canProceedStep1) return;
+    Get.toNamed(AppRoutes.tripPlanningDatetime);
+  }
+
+  void goToTransport() {
+    if (!canProceedStep2) {
+      _showDatetimeValidationError();
       return;
     }
-    if (currentStep.value < totalSteps - 1) {
-      currentStep.value++;
-      if (currentStep.value == 3) {
-        loadTransportEstimates();
-      }
-    }
+    loadTransportEstimates();
+    Get.toNamed(AppRoutes.tripPlanningTransport);
   }
 
-  void previousStep() {
-    if (currentStep.value > 0) {
-      currentStep.value--;
+  void goToConfirm() {
+    if (!canProceedStep3) return;
+    Get.toNamed(AppRoutes.tripPlanningConfirm);
+  }
+
+  void _showDatetimeValidationError() {
+    final en = MyApp.isEnglish.value;
+    if (!isStartTimeValid) {
+      Get.snackbar(
+        en ? 'Invalid start time' : 'ভুল শুরুর সময়',
+        en
+            ? 'Pick a start time that is still in the future.'
+            : 'এমন একটি সময় বেছে নিন যা এখনো আসেনি।',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    if (useCurrentLocationAsStart.value) {
+      Get.snackbar(
+        en ? 'Location required' : 'লোকেশন প্রয়োজন',
+        en
+            ? 'Enable location to use your current position as the trip start.'
+            : 'ট্রিপ শুরু করতে বর্তমান লোকেশন চালু করুন।',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } else {
-      Get.back();
+      Get.snackbar(
+        en ? 'Start location required' : 'শুরুর লোকেশন প্রয়োজন',
+        en
+            ? 'Select a district and sub-district for your trip start.'
+            : 'ট্রিপ শুরুর জন্য জেলা ও উপজেলা বেছে নিন।',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
-  bool get canGoNext {
-    switch (currentStep.value) {
+  bool canGoNextForStep(int stepIndex) {
+    switch (stepIndex) {
       case 0:
         return canProceedStep0;
       case 1:

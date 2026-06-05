@@ -24,6 +24,6 @@ class PlaceDetailsController extends GetxController {
   void toggleSave() => isSaved.value = !isSaved.value;
 
   void planTripHere() {
-    Get.toNamed(AppRoutes.tripPlanning, arguments: {'district': null});
+    Get.toNamed(AppRoutes.tripPlanningDistrict);
   }
 }

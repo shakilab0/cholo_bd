@@ -70,10 +70,11 @@ class StepPlaces extends StatelessWidget {
                 final place = places[i];
                 return Obx(() {
                   final selected = controller.isPlaceSelected(place);
-                  return _PlaceTile(
+                  return _placeTile(
                     controller: controller,
                     place: place,
                     selected: selected,
+                    context: context,
                   );
                 });
               },
@@ -83,17 +84,12 @@ class StepPlaces extends StatelessWidget {
       ],
     );
   }
-}
 
-class _PlaceTile extends StatelessWidget {
-  final TripPlanningController controller;
-  final PlaceModel place;
-  final bool selected;
-
-  const _PlaceTile({required this.controller, required this.place, required this.selected});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _placeTile({
+    required BuildContext context,
+    required TripPlanningController controller,
+    required PlaceModel place,
+    required bool selected}) {
     return GestureDetector(
       onTap: () => controller.togglePlace(place),
       child: AnimatedContainer(
@@ -115,13 +111,13 @@ class _PlaceTile extends StatelessWidget {
               ),
               child: place.images.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: place.images.first,
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) =>
-                          Container(width: 80, height: 80, color: AppColor.border),
-                    )
+                imageUrl: place.images.first,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) =>
+                    Container(width: 80, height: 80, color: AppColor.border),
+              )
                   : Container(width: 80, height: 80, color: AppColor.border),
             ),
             const SizedBox(width: 12),
@@ -190,4 +186,7 @@ class _PlaceTile extends StatelessWidget {
       ),
     );
   }
+
 }
+
+

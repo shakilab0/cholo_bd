@@ -138,15 +138,16 @@ class StepTransport extends StatelessWidget {
                                       spacing: 6,
                                       runSpacing: 4,
                                       children: [
-                                        _InfoPill(
+                                        _infoPill(
                                           icon: Icons.schedule_rounded,
                                           text: timeText,
+                                          context: context,
                                         ),
                                         if (est?.distanceKm != null)
-                                          _InfoPill(
+                                          _infoPill(
                                             icon: Icons.straighten_rounded,
-                                            text:
-                                                '${est!.distanceKm!.toStringAsFixed(1)} km',
+                                            text: '${est!.distanceKm!.toStringAsFixed(1)} km',
+                                            context: context,
                                           ),
                                       ],
                                     ),
@@ -190,15 +191,8 @@ class StepTransport extends StatelessWidget {
       ],
     );
   }
-}
 
-class _InfoPill extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const _InfoPill({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _infoPill({required BuildContext context,required IconData icon, required String text}) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

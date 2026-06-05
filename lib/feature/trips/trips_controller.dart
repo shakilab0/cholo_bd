@@ -45,10 +45,11 @@ class TripsController extends GetxController {
 
   void setFilter(String filter) => selectedFilter.value = filter;
 
-  void startNewTrip() => Get.toNamed(AppRoutes.tripPlanning);
+  void startNewTrip() => Get.toNamed(AppRoutes.tripPlanningDistrict);
 
   void startTripForDistrict(DistrictModel district) {
-    Get.toNamed(AppRoutes.tripPlanning, arguments: {'district': district});
+    Get.toNamed(AppRoutes.tripPlanningPlaces,
+        arguments: {'district': district});
   }
 
   bool canCancelTrip(TripModel trip) => trip.status == TripStatus.upcoming;

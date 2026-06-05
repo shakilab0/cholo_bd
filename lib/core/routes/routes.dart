@@ -16,7 +16,11 @@ import 'package:cholo_bd/feature/district_places/district_places_page.dart';
 import 'package:cholo_bd/feature/district_places/district_places_binding.dart';
 import 'package:cholo_bd/feature/place_details/place_details_page.dart';
 import 'package:cholo_bd/feature/place_details/place_details_binding.dart';
-import 'package:cholo_bd/feature/trip_planning/presentation/trip_planning_page.dart';
+import 'package:cholo_bd/feature/trip_planning/presentation/pages/trip_planning_confirm_page.dart';
+import 'package:cholo_bd/feature/trip_planning/presentation/pages/trip_planning_datetime_page.dart';
+import 'package:cholo_bd/feature/trip_planning/presentation/pages/trip_planning_district_page.dart';
+import 'package:cholo_bd/feature/trip_planning/presentation/pages/trip_planning_places_page.dart';
+import 'package:cholo_bd/feature/trip_planning/presentation/pages/trip_planning_transport_page.dart';
 import 'package:cholo_bd/feature/trip_planning/presentation/trip_planning_binding.dart';
 import 'package:cholo_bd/feature/trips/trips_page.dart';
 import 'package:cholo_bd/feature/trips/trips_binding.dart';
@@ -88,7 +92,32 @@ final List<GetPage> appRoutes = [
   ),
   GetPage(
     name: AppRoutes.tripPlanning,
-    page: () => const TripPlanningPage(),
+    page: () => const TripPlanningDistrictPage(),
+    binding: TripPlanningBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.tripPlanningDistrict,
+    page: () => const TripPlanningDistrictPage(),
+    binding: TripPlanningBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.tripPlanningPlaces,
+    page: () => const TripPlanningPlacesPage(),
+    binding: TripPlanningBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.tripPlanningDatetime,
+    page: () => const TripPlanningDatetimePage(),
+    binding: TripPlanningBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.tripPlanningTransport,
+    page: () => const TripPlanningTransportPage(),
+    binding: TripPlanningBinding(),
+  ),
+  GetPage(
+    name: AppRoutes.tripPlanningConfirm,
+    page: () => const TripPlanningConfirmPage(),
     binding: TripPlanningBinding(),
   ),
   GetPage(
@@ -146,6 +175,11 @@ class AppRoutes {
   static const String districtPlaces = '/district-places';
   static const String placeDetails = '/place-details';
   static const String tripPlanning = '/trip-planning';
+  static const String tripPlanningDistrict = '/trip-planning/district';
+  static const String tripPlanningPlaces = '/trip-planning/places';
+  static const String tripPlanningDatetime = '/trip-planning/datetime';
+  static const String tripPlanningTransport = '/trip-planning/transport';
+  static const String tripPlanningConfirm = '/trip-planning/confirm';
   static const String trips = '/trips';
   static const String tripDetails = '/trip-details';
   static const String profile = '/profile';

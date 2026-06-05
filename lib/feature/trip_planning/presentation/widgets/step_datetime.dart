@@ -13,6 +13,15 @@ class StepDatetime extends StatelessWidget {
   final TripPlanningController controller;
   const StepDatetime({super.key, required this.controller});
 
+  static const _timePresets = [
+    (hour: 6, minute: 0, en: '6 AM', bn: '৬টা'),
+    (hour: 8, minute: 0, en: '8 AM', bn: '৮টা'),
+    (hour: 12, minute: 0, en: '12 PM', bn: '১২টা'),
+    (hour: 15, minute: 0, en: '3 PM', bn: '৩টা'),
+    (hour: 18, minute: 0, en: '6 PM', bn: '৬টা'),
+    (hour: 20, minute: 0, en: '8 PM', bn: '৮টা'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final en = MyApp.isEnglish.value;
@@ -23,11 +32,7 @@ class StepDatetime extends StatelessWidget {
         children: [
           Text(
             en ? 'When are you going?' : 'কখন যাবেন?',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 18,
-              color: AppColor.textPrimary,
-            ),
+            style: _pageHeading(en),
           ),
           const SizedBox(height: 16),
           Obx(() {
@@ -51,17 +56,20 @@ class StepDatetime extends StatelessWidget {
             return Wrap(
               spacing: 10,
               children: [
-                _QuickChip(
+                _quickChip(
+                  en: en,
                   label: en ? 'Today' : 'আজ',
                   selected: quickLabel == 'today',
                   onTap: () => controller.selectDateQuick(0),
                 ),
-                _QuickChip(
+                _quickChip(
+                  en: en,
                   label: en ? 'Tomorrow' : 'আগামীকাল',
                   selected: quickLabel == 'tomorrow',
                   onTap: () => controller.selectDateQuick(1),
                 ),
-                _QuickChip(
+                _quickChip(
+                  en: en,
                   label: en ? 'This Weekend' : 'এই সপ্তাহান্ত',
                   selected: quickLabel == 'weekend',
                   onTap: controller.selectThisWeekend,
@@ -70,37 +78,58 @@ class StepDatetime extends StatelessWidget {
             );
           }),
           const SizedBox(height: 20),
-          _DatePickerField(controller: controller),
+          _datePickerField(context: context),
           const SizedBox(height: 24),
           Text(
             en ? 'What time will you start?' : 'কখন শুরু করবেন?',
-            style: AppTextStyle.heading3,
+            style: _pageHeading(en),
           ),
           const SizedBox(height: 6),
           Text(
             en
                 ? 'Bus or train departure, pickup time, etc.'
                 : 'বাস/ট্রেনের সময়, রিকশা পিকআপের সময় ইত্যাদি',
-            style: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
+            style: _sectionHint(en),
           ),
           const SizedBox(height: 12),
-          _StartTimeSection(controller: controller),
+          _startTimeSection(context: context),
           const SizedBox(height: 24),
           Text(
             en ? 'Where will you start?' : 'কোথা থেকে শুরু করবেন?',
-            style: AppTextStyle.heading3,
+            style: _pageHeading(en),
           ),
           const SizedBox(height: 12),
-          _StartLocationCard(controller: controller),
+          _startLocationCard(context: context),
         ],
       ),
     );
   }
-}
 
-class _DatePickerField extends StatelessWidget {
-  final TripPlanningController controller;
-  const _DatePickerField({required this.controller});
+  Widget _quickChip({
+    required bool en,
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? AppColor.primary : AppColor.bgCard,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: selected ? AppColor.primary : AppColor.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: _chipLabel(en, selected: selected),
+        ),
+      ),
+    );
+  }
 
   Future<void> _openCalendar(BuildContext context) async {
     final en = MyApp.isEnglish.value;
@@ -113,7 +142,8 @@ class _DatePickerField extends StatelessWidget {
       builder: (dialogContext) {
         return Dialog(
           backgroundColor: AppColor.bgCard,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
             child: Column(
@@ -121,7 +151,7 @@ class _DatePickerField extends StatelessWidget {
               children: [
                 Text(
                   en ? 'Pick a date' : 'তারিখ বেছে নিন',
-                  style: AppTextStyle.sectionTitle,
+                  style: _pageHeading(en),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -142,8 +172,7 @@ class _DatePickerField extends StatelessWidget {
                       onPressed: () => Navigator.of(dialogContext).pop(),
                       child: Text(
                         en ? 'Cancel' : 'বাতিল',
-                        style: AppTextStyle.labelSmall
-                            .copyWith(color: AppColor.textSecondary),
+                        style: _sectionHint(en),
                       ),
                     ),
                     TextButton(
@@ -153,8 +182,7 @@ class _DatePickerField extends StatelessWidget {
                       },
                       child: Text(
                         en ? 'Done' : 'নির্বাচন',
-                        style: AppTextStyle.labelSmall
-                            .copyWith(color: AppColor.primary),
+                        style: _actionText(en),
                       ),
                     ),
                   ],
@@ -167,8 +195,7 @@ class _DatePickerField extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _datePickerField({required BuildContext context}) {
     final en = MyApp.isEnglish.value;
 
     return Obx(() {
@@ -194,21 +221,19 @@ class _DatePickerField extends StatelessWidget {
                   children: [
                     Text(
                       en ? 'Selected date' : 'নির্বাচিত তারিখ',
-                      style: AppTextStyle.labelSmall
-                          .copyWith(color: AppColor.textSecondary),
+                      style: _fieldLabel(en),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       DateFormat('EEEE, d MMMM yyyy').format(selected),
-                      style: AppTextStyle.sectionTitle,
+                      style: _fieldValue(en),
                     ),
                   ],
                 ),
               ),
               Text(
                 en ? 'Change' : 'পরিবর্তন',
-                style:
-                    AppTextStyle.labelSmall.copyWith(color: AppColor.primary),
+                style: _actionText(en),
               ),
               const SizedBox(width: 4),
               const Icon(Icons.chevron_right_rounded,
@@ -219,20 +244,6 @@ class _DatePickerField extends StatelessWidget {
       );
     });
   }
-}
-
-class _StartTimeSection extends StatelessWidget {
-  final TripPlanningController controller;
-  const _StartTimeSection({required this.controller});
-
-  static const _presets = [
-    (hour: 6, minute: 0, en: '6 AM', bn: '৬টা'),
-    (hour: 8, minute: 0, en: '8 AM', bn: '৮টা'),
-    (hour: 12, minute: 0, en: '12 PM', bn: '১২টা'),
-    (hour: 15, minute: 0, en: '3 PM', bn: '৩টা'),
-    (hour: 18, minute: 0, en: '6 PM', bn: '৬টা'),
-    (hour: 20, minute: 0, en: '8 PM', bn: '৮টা'),
-  ];
 
   Future<void> _pickTime(BuildContext context) async {
     final picked = await showTimePicker(
@@ -255,8 +266,7 @@ class _StartTimeSection extends StatelessWidget {
     if (picked != null) controller.selectStartTime(picked);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _startTimeSection({required BuildContext context}) {
     final en = MyApp.isEnglish.value;
 
     return Obx(() {
@@ -269,10 +279,11 @@ class _StartTimeSection extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: _presets.map((preset) {
-              final isSelected =
-                  selected.hour == preset.hour && selected.minute == preset.minute;
-              return _QuickChip(
+            children: _timePresets.map((preset) {
+              final isSelected = selected.hour == preset.hour &&
+                  selected.minute == preset.minute;
+              return _quickChip(
+                en: en,
                 label: en ? preset.en : preset.bn,
                 selected: isSelected,
                 onTap: () => controller.selectStartTimePreset(
@@ -310,21 +321,19 @@ class _StartTimeSection extends StatelessWidget {
                       children: [
                         Text(
                           en ? 'Start time' : 'শুরুর সময়',
-                          style: AppTextStyle.labelSmall
-                              .copyWith(color: AppColor.textSecondary),
+                          style: _fieldLabel(en),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           controller.startTimeLabel,
-                          style: AppTextStyle.sectionTitle,
+                          style: _fieldValue(en),
                         ),
                       ],
                     ),
                   ),
                   Text(
                     en ? 'Change' : 'পরিবর্তন',
-                    style: AppTextStyle.labelSmall
-                        .copyWith(color: AppColor.primary),
+                    style: _actionText(en),
                   ),
                   const SizedBox(width: 4),
                   const Icon(Icons.chevron_right_rounded,
@@ -339,21 +348,15 @@ class _StartTimeSection extends StatelessWidget {
               en
                   ? 'This time has already passed. Pick a later time.'
                   : 'এই সময় ইতিমধ্যে পেরিয়ে গেছে। পরের সময় বেছে নিন।',
-              style: AppTextStyle.labelSmall.copyWith(color: AppColor.alertRed),
+              style: _errorText(en),
             ),
           ],
         ],
       );
     });
   }
-}
 
-class _StartLocationCard extends StatelessWidget {
-  final TripPlanningController controller;
-  const _StartLocationCard({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _startLocationCard({required BuildContext context}) {
     final en = MyApp.isEnglish.value;
     final loc = Get.find<LocationService>();
 
@@ -365,7 +368,8 @@ class _StartLocationCard extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _LocationOptionTile(
+          _locationOptionTile(
+            en: en,
             icon: Icons.my_location_rounded,
             title: en ? 'Current location' : 'বর্তমান লোকেশন',
             subtitle: useCurrent && label.isNotEmpty
@@ -388,15 +392,13 @@ class _StartLocationCard extends StatelessWidget {
                       en
                           ? 'Location permission is needed to plan from where you are.'
                           : 'আপনার অবস্থান থেকে ট্রিপ প্ল্যান করতে লোকেশন অনুমতি দিন।',
-                      style: AppTextStyle.labelSmall
-                          .copyWith(color: AppColor.textSecondary),
+                      style: _sectionHint(en),
                     ),
                     TextButton(
                       onPressed: controller.enableLocationForTrip,
                       child: Text(
                         en ? 'Enable location' : 'লোকেশন চালু করুন',
-                        style: AppTextStyle.labelSmall
-                            .copyWith(color: AppColor.primary),
+                        style: _actionText(en),
                       ),
                     ),
                   ],
@@ -411,14 +413,14 @@ class _StartLocationCard extends StatelessWidget {
                       size: 18, color: AppColor.primary),
                   label: Text(
                     en ? 'Refresh' : 'রিফ্রেশ',
-                    style: AppTextStyle.labelSmall
-                        .copyWith(color: AppColor.primary),
+                    style: _actionText(en),
                   ),
                 ),
               ),
           ],
           const SizedBox(height: 10),
-          _LocationOptionTile(
+          _locationOptionTile(
+            en: en,
             icon: Icons.edit_location_alt_rounded,
             title: en ? 'Select manually' : 'নিজে বেছে নিন',
             subtitle: !useCurrent && label.isNotEmpty ? label : null,
@@ -427,33 +429,23 @@ class _StartLocationCard extends StatelessWidget {
           ),
           if (!useCurrent) ...[
             const SizedBox(height: 16),
-            _StartDistrictDropdown(controller: controller),
+            _startDistrictDropdown(),
             const SizedBox(height: 12),
-            _StartSubDistrictDropdown(controller: controller),
+            _startSubDistrictDropdown(),
           ],
         ],
       );
     });
   }
-}
 
-class _LocationOptionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String? subtitle;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _LocationOptionTile({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _locationOptionTile({
+    required bool en,
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -477,14 +469,12 @@ class _LocationOptionTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyle.sectionTitle),
+                  Text(title, style: _tileTitle(en)),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
                     Text(
-                      subtitle!,
-                      style: AppTextStyle.labelSmall.copyWith(
-                        color: AppColor.textSecondary,
-                      ),
+                      subtitle,
+                      style: _tileSubtitle(en),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -504,21 +494,16 @@ class _LocationOptionTile extends StatelessWidget {
       ),
     );
   }
-}
 
-class _StartDistrictDropdown extends StatelessWidget {
-  final TripPlanningController controller;
-  const _StartDistrictDropdown({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _startDistrictDropdown() {
     final en = MyApp.isEnglish.value;
 
     return Obx(() {
       final districts = controller.districts;
       final selected = controller.selectedStartDistrict.value;
 
-      return _LocationDropdownField<DistrictModel>(
+      return _locationDropdownField<DistrictModel>(
+        en: en,
         label: en ? 'District' : 'জেলা',
         hint: en ? 'Select district' : 'জেলা বেছে নিন',
         value: selected,
@@ -528,14 +513,8 @@ class _StartDistrictDropdown extends StatelessWidget {
       );
     });
   }
-}
 
-class _StartSubDistrictDropdown extends StatelessWidget {
-  final TripPlanningController controller;
-  const _StartSubDistrictDropdown({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _startSubDistrictDropdown() {
     final en = MyApp.isEnglish.value;
 
     return Obx(() {
@@ -543,7 +522,8 @@ class _StartSubDistrictDropdown extends StatelessWidget {
       final selected = controller.selectedStartSubDistrict.value;
       final hasDistrict = controller.selectedStartDistrict.value != null;
 
-      return _LocationDropdownField<SubDistrictModel>(
+      return _locationDropdownField<SubDistrictModel>(
+        en: en,
         label: en ? 'Sub-district' : 'উপজেলা',
         hint: hasDistrict
             ? (en ? 'Select sub-district' : 'উপজেলা বেছে নিন')
@@ -555,33 +535,22 @@ class _StartSubDistrictDropdown extends StatelessWidget {
       );
     });
   }
-}
 
-class _LocationDropdownField<T> extends StatelessWidget {
-  final String label;
-  final String hint;
-  final T? value;
-  final List<T> items;
-  final String Function(T) itemLabel;
-  final ValueChanged<T?>? onChanged;
-
-  const _LocationDropdownField({
-    required this.label,
-    required this.hint,
-    required this.value,
-    required this.items,
-    required this.itemLabel,
-    this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _locationDropdownField<T>({
+    required bool en,
+    required String label,
+    required String hint,
+    required T? value,
+    required List<T> items,
+    required String Function(T) itemLabel,
+    ValueChanged<T?>? onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary),
+          style: _fieldLabel(en),
         ),
         const SizedBox(height: 8),
         Container(
@@ -597,8 +566,7 @@ class _LocationDropdownField<T> extends StatelessWidget {
               value: value,
               hint: Text(
                 hint,
-                style: AppTextStyle.bodySmall
-                    .copyWith(color: AppColor.textSecondary),
+                style: _sectionHint(en),
               ),
               icon: const Icon(Icons.keyboard_arrow_down_rounded,
                   color: AppColor.primary),
@@ -609,7 +577,7 @@ class _LocationDropdownField<T> extends StatelessWidget {
                       value: item,
                       child: Text(
                         itemLabel(item),
-                        style: AppTextStyle.bodySmall,
+                        style: _dropdownItem(en),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -622,41 +590,61 @@ class _LocationDropdownField<T> extends StatelessWidget {
       ],
     );
   }
-}
 
-class _QuickChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
+  TextStyle _pageHeading(bool en) => en
+      ? AppTextStyle.heading3
+      : AppTextStyle.banglaHeading.copyWith(fontSize: 18);
 
-  const _QuickChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+  TextStyle _sectionHint(bool en) => en
+      ? AppTextStyle.bodyMedium
+      : AppTextStyle.banglaBody;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? AppColor.primary : AppColor.bgCard,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: selected ? AppColor.primary : AppColor.border,
-          ),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyle.labelSmall.copyWith(
-            color: selected ? AppColor.inkDark : AppColor.textPrimary,
-            fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-          ),
-        ),
-      ),
-    );
-  }
+  TextStyle _fieldLabel(bool en) => en
+      ? AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary)
+      : AppTextStyle.banglaBody.copyWith(
+          fontSize: 12,
+          color: AppColor.textSecondary,
+        );
+
+  TextStyle _fieldValue(bool en) => en
+      ? AppTextStyle.labelMedium.copyWith(
+          fontWeight: FontWeight.w600,
+          color: AppColor.textPrimary,
+        )
+      : AppTextStyle.banglaLabel.copyWith(fontWeight: FontWeight.w600);
+
+  TextStyle _chipLabel(bool en, {required bool selected}) => en
+      ? AppTextStyle.labelMedium.copyWith(
+          color: selected ? AppColor.inkDark : AppColor.textPrimary,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+        )
+      : AppTextStyle.banglaLabel.copyWith(
+          color: selected ? AppColor.inkDark : AppColor.textPrimary,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+        );
+
+  TextStyle _tileTitle(bool en) => en
+      ? AppTextStyle.labelMedium.copyWith(fontWeight: FontWeight.w600)
+      : AppTextStyle.banglaLabel.copyWith(fontWeight: FontWeight.w600);
+
+  TextStyle _tileSubtitle(bool en) => en
+      ? AppTextStyle.bodySmall.copyWith(color: AppColor.textSecondary)
+      : AppTextStyle.banglaBody.copyWith(
+          fontSize: 12,
+          color: AppColor.textSecondary,
+        );
+
+  TextStyle _actionText(bool en) => en
+      ? AppTextStyle.labelMedium.copyWith(color: AppColor.primary)
+      : AppTextStyle.banglaLabel.copyWith(color: AppColor.primary);
+
+  TextStyle _dropdownItem(bool en) =>
+      en ? AppTextStyle.bodyMedium : AppTextStyle.banglaBody;
+
+  TextStyle _errorText(bool en) => en
+      ? AppTextStyle.bodySmall.copyWith(color: AppColor.alertRed)
+      : AppTextStyle.banglaBody.copyWith(
+          fontSize: 12,
+          color: AppColor.alertRed,
+        );
 }
