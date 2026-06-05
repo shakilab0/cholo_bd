@@ -73,25 +73,4 @@ class AppTextStyle {
     color: AppColor.textSecondary,
   );
 
-  // Noto Sans Bengali — all Bangla strings
-  static TextStyle banglaHeading = const TextStyle(
-    fontFamily: 'NotoSansBengali',
-    fontWeight: FontWeight.w700,
-    fontSize: 20,
-    color: AppColor.textPrimary,
-  );
-
-  static TextStyle banglaBody = const TextStyle(
-    fontFamily: 'NotoSansBengali',
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    color: AppColor.textSecondary,
-  );
-
-  static TextStyle banglaLabel = const TextStyle(
-    fontFamily: 'NotoSansBengali',
-    fontWeight: FontWeight.w500,
-    fontSize: 13,
-    color: AppColor.textPrimary,
-  );
 }

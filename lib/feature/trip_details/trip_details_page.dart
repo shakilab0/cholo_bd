@@ -250,12 +250,6 @@ class _ItineraryTimeline extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(place.name, style: AppTextStyle.sectionTitle),
-                        if (place.nameBn.isNotEmpty) ...[
-                          const SizedBox(height: 2),
-                          Text(place.nameBn,
-                              style: AppTextStyle.caption.copyWith(
-                                  color: AppColor.textSecondary)),
-                        ],
                         const SizedBox(height: 6),
                         Row(
                           children: [

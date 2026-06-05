@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
 import 'package:cholo_bd/feature/splash_screen/splash_screen_controller.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -17,7 +16,6 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo with map-pin drop animation
             TweenAnimationBuilder<double>(
               tween: Tween(begin: -60.0, end: 0.0),
               duration: const Duration(milliseconds: 4000),
@@ -31,10 +29,10 @@ class SplashScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text(AppStrings.appName, style: AppTextStyle.heading2),
+            Text('Smart Travel BD', style: AppTextStyle.heading2),
             const SizedBox(height: 8),
             Text(
-              AppStrings.taglineBn,
+              'Explore Bangladesh the smart way',
               style: AppTextStyle.bodyMedium,
             ),
           ],

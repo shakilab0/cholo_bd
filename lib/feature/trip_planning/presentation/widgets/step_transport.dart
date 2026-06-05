@@ -109,19 +109,8 @@ class StepTransport extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(transport.name,
-                                          style: AppTextStyle.sectionTitle),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        transport.nameBn,
-                                        style: AppTextStyle.labelSmall
-                                            .copyWith(
-                                                color: AppColor.textSecondary),
-                                      ),
-                                    ],
-                                  ),
+                                  Text(transport.name,
+                                      style: AppTextStyle.sectionTitle),
                                   const SizedBox(height: 3),
                                   Text(
                                     available

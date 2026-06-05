@@ -81,11 +81,6 @@ class ProfileController extends GetxController {
     );
   }
 
-  void toggleLanguage() {
-    MyApp.isEnglish.value = !MyApp.isEnglish.value;
-    saveLanguageIsEnglish(MyApp.isEnglish.value);
-  }
-
   Future<void> testNotification() async {
     try {
       await NotificationService.instance.showTestNotification();

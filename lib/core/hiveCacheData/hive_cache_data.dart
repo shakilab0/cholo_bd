@@ -36,16 +36,6 @@ bool getOnboardingCompleted() {
       .get('onboarding_completed', defaultValue: false);
 }
 
-Future<void> saveLanguageIsEnglish(bool value) async {
-  final box = await _openBox(_settingsBox);
-  await box.put('lang_is_english', value);
-}
-
-bool getLanguageIsEnglish() {
-  if (!Hive.isBoxOpen(_settingsBox)) return true;
-  return Hive.box(_settingsBox).get('lang_is_english', defaultValue: true);
-}
-
 Future<void> saveIsGuestMode(bool value) async {
   final box = await _openBox(_settingsBox);
   await box.put('is_guest_mode', value);

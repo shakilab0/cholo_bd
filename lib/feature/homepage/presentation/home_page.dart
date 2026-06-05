@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
 import 'package:cholo_bd/core/services/location_service.dart';
 import 'package:cholo_bd/feature/homepage/presentation/home_page_controller.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/district_card.dart';
@@ -36,7 +34,7 @@ class HomePage extends GetView<HomePageController> {
 
               // Featured Places Slider
               _sectionHeader(
-                title: AppStrings.featuredPlaces,
+                title: 'Featured Places',
                 onSeeAll: controller.navigateToFeaturedPlaces,
               ),
 
@@ -61,7 +59,7 @@ class HomePage extends GetView<HomePageController> {
               const SizedBox(height: 10),
               // Explore Districts
               _sectionHeader(
-                title: AppStrings.exploreDistricts,
+                title: 'Explore Districts',
                 onSeeAll: controller.navigateToAllDistricts,
               ),
               const SizedBox(height: 10),
@@ -102,20 +100,15 @@ class HomePage extends GetView<HomePageController> {
                       ),
 
                       const SizedBox(height: 6),
-                      Obx(() => Container(
-                        decoration: BoxDecoration(
-                          //color: AppColor.primary.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(4),
+                      Text(
+                        list[i].name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: AppColor.textPrimary,
                         ),
-                        child: Text(
-                          MyApp.isEnglish.value
-                              ? list[i].name
-                              : list[i].nameBn,
-                          style: TextStyle(fontSize: 16,color: AppColor.textPrimary),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       const SizedBox(height: 10),
                     ],
                   ),
@@ -178,26 +171,6 @@ class HomePage extends GetView<HomePageController> {
             );
           }),
           const Spacer(),
-          // Language toggle
-          Obx(() => GestureDetector(
-                onTap: controller.toggleLanguage,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColor.primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: AppColor.primary.withValues(alpha: 0.3)),
-                  ),
-                  child: Text(
-                    MyApp.isEnglish.value ? 'EN' : 'বাং',
-                    style: AppTextStyle.labelSmall
-                        .copyWith(color: AppColor.primary),
-                  ),
-                ),
-              )),
-          const SizedBox(width: 8),
           IconButton(
             onPressed: () => controller.navigateToAllDistricts(autofocusSearch: true),
             padding: EdgeInsets.zero,
@@ -276,7 +249,7 @@ class HomePage extends GetView<HomePageController> {
           if (onSeeAll != null && showSeeAll != false)
             GestureDetector(
               onTap: onSeeAll,
-              child: Text(AppStrings.seeAll,
+              child: Text('See All',
                   style: AppTextStyle.labelSmall
                       .copyWith(color: AppColor.primary)),
             ),

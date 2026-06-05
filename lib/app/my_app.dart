@@ -7,8 +7,6 @@ import 'package:cholo_bd/core/routes/routes.dart';
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // App-level reactive flags
-  static RxBool isEnglish = true.obs;
   static RxBool isGuestMode = true.obs;
 
   @override

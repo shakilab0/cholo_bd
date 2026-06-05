@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
 import 'package:cholo_bd/feature/featured_places/featured_places_controller.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 
@@ -24,12 +22,7 @@ class FeaturedPlacesPage extends GetView<FeaturedPlacesController> {
               color: AppColor.textPrimary, size: 20),
           onPressed: () => Get.back(),
         ),
-        title: Obx(() => Text(
-              MyApp.isEnglish.value
-                  ? AppStrings.featuredPlaces
-                  : AppStrings.featuredPlacesBn,
-              style: AppTextStyle.heading3,
-            )),
+        title: Text('Featured Places', style: AppTextStyle.heading3),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -106,12 +99,12 @@ class _PlaceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Obx(() => Text(
-                        MyApp.isEnglish.value ? place.name : place.nameBn,
-                        style: AppTextStyle.sectionTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )),
+                  Text(
+                    place.name,
+                    style: AppTextStyle.sectionTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 4),
                   Text(place.districtName,
                       style: AppTextStyle.caption

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 
 
@@ -55,7 +54,7 @@ class _OnboardingStep4NamePageState extends State<OnboardingStep4NamePage> {
                   child: TextButton(
                     onPressed: () => Get.toNamed(AppRoutes.onboardingPreference),
                     child: Text(
-                      AppStrings.skip,
+                      'Skip',
                       style: AppTextStyle.labelMedium.copyWith(color: AppColor.textSecondary),
                     ),
                   ),
@@ -180,8 +179,7 @@ class _OnboardingStep4NamePageState extends State<OnboardingStep4NamePage> {
                               borderRadius: BorderRadius.circular(16),
                             ),
                           ),
-                          child: Text(
-                            AppStrings.next,
+                          child: Text('Next',
                             style: AppTextStyle.button,
                           ),
                         ),

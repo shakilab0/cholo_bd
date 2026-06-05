@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
-import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
 
 class OnboardingStep3Page extends StatelessWidget {
   const OnboardingStep3Page({super.key});
@@ -22,7 +20,7 @@ class OnboardingStep3Page extends StatelessWidget {
               child: TextButton(
                 onPressed: () => Get.toNamed(AppRoutes.onboardingName),
                 child: Text(
-                  AppStrings.skip,
+                  'Skip',
                   style: AppTextStyle.labelMedium
                       .copyWith(color: AppColor.textSecondary),
                 ),
@@ -48,15 +46,12 @@ class OnboardingStep3Page extends StatelessWidget {
                               size: 80, color: AppColor.primary),
                         ),
                         const SizedBox(height: 48),
-                        Text(AppStrings.onboarding3Title,
+                        Text('Works Offline',
                             style: AppTextStyle.heading2,
                             textAlign: TextAlign.center),
-                        const SizedBox(height: 8),
-                        Text(AppStrings.onboarding3TitleBn,
-                            style: AppTextStyle.banglaHeading,
-                            textAlign: TextAlign.center),
                         const SizedBox(height: 16),
-                        Text(AppStrings.onboarding3Sub,
+                        Text(
+                            'Your trip details available even without internet',
                             style: AppTextStyle.bodyMedium,
                             textAlign: TextAlign.center),
                       ],
@@ -74,8 +69,7 @@ class OnboardingStep3Page extends StatelessWidget {
                         color: i == 2 ? AppColor.primary : AppColor.border,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                    ),
-                  ),
+                    )),
                 ),
                 const SizedBox(height: 32),
                 Padding(
@@ -84,7 +78,7 @@ class OnboardingStep3Page extends StatelessWidget {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Get.toNamed(AppRoutes.onboardingName);
                       },
                       style: ElevatedButton.styleFrom(
@@ -93,7 +87,7 @@ class OnboardingStep3Page extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(AppStrings.next, style: AppTextStyle.button),
+                      child: Text('Next', style: AppTextStyle.button),
                     ),
                   ),
                 ),

@@ -79,12 +79,6 @@ class PlaceDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(place.name, style: AppTextStyle.heading3),
-                            if (place.nameBn.isNotEmpty) ...[
-                              const SizedBox(height: 2),
-                              Text(place.nameBn,
-                                  style: AppTextStyle.labelSmall.copyWith(
-                                      color: AppColor.textSecondary)),
-                            ],
                           ],
                         ),
                       ),

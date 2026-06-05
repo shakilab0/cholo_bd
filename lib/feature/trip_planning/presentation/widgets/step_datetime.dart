@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/core/services/location_service.dart';
@@ -14,25 +13,23 @@ class StepDatetime extends StatelessWidget {
   const StepDatetime({super.key, required this.controller});
 
   static const _timePresets = [
-    (hour: 6, minute: 0, en: '6 AM', bn: '৬টা'),
-    (hour: 8, minute: 0, en: '8 AM', bn: '৮টা'),
-    (hour: 12, minute: 0, en: '12 PM', bn: '১২টা'),
-    (hour: 15, minute: 0, en: '3 PM', bn: '৩টা'),
-    (hour: 18, minute: 0, en: '6 PM', bn: '৬টা'),
-    (hour: 20, minute: 0, en: '8 PM', bn: '৮টা'),
+    (hour: 6, minute: 0, label: '6 AM'),
+    (hour: 8, minute: 0, label: '8 AM'),
+    (hour: 12, minute: 0, label: '12 PM'),
+    (hour: 15, minute: 0, label: '3 PM'),
+    (hour: 18, minute: 0, label: '6 PM'),
+    (hour: 20, minute: 0, label: '8 PM'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final en = MyApp.isEnglish.value;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            en ? 'When are you going?' : 'কখন যাবেন?',
-            style: _pageHeading(en),
+          Text('When are you going?',
+            style: AppTextStyle.heading3,
           ),
           const SizedBox(height: 16),
           Obx(() {
@@ -57,20 +54,17 @@ class StepDatetime extends StatelessWidget {
               spacing: 10,
               children: [
                 _quickChip(
-                  en: en,
-                  label: en ? 'Today' : 'আজ',
+                  label: 'Today',
                   selected: quickLabel == 'today',
                   onTap: () => controller.selectDateQuick(0),
                 ),
                 _quickChip(
-                  en: en,
-                  label: en ? 'Tomorrow' : 'আগামীকাল',
+                  label: 'Tomorrow',
                   selected: quickLabel == 'tomorrow',
                   onTap: () => controller.selectDateQuick(1),
                 ),
                 _quickChip(
-                  en: en,
-                  label: en ? 'This Weekend' : 'এই সপ্তাহান্ত',
+                  label: 'This Weekend',
                   selected: quickLabel == 'weekend',
                   onTap: controller.selectThisWeekend,
                 ),
@@ -81,22 +75,20 @@ class StepDatetime extends StatelessWidget {
           _datePickerField(context: context),
           const SizedBox(height: 24),
           Text(
-            en ? 'What time will you start?' : 'কখন শুরু করবেন?',
-            style: _pageHeading(en),
+            'What time will you start?',
+            style: AppTextStyle.heading3,
           ),
           const SizedBox(height: 6),
           Text(
-            en
-                ? 'Bus or train departure, pickup time, etc.'
-                : 'বাস/ট্রেনের সময়, রিকশা পিকআপের সময় ইত্যাদি',
-            style: _sectionHint(en),
+            'Bus or train departure, pickup time, etc.',
+            style: AppTextStyle.bodyMedium,
           ),
           const SizedBox(height: 12),
           _startTimeSection(context: context),
           const SizedBox(height: 24),
           Text(
-            en ? 'Where will you start?' : 'কোথা থেকে শুরু করবেন?',
-            style: _pageHeading(en),
+            'Where will you start?',
+            style: AppTextStyle.heading3,
           ),
           const SizedBox(height: 12),
           _startLocationCard(context: context),
@@ -106,7 +98,6 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _quickChip({
-    required bool en,
     required String label,
     required bool selected,
     required VoidCallback onTap,
@@ -125,14 +116,16 @@ class StepDatetime extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: _chipLabel(en, selected: selected),
+          style: AppTextStyle.labelMedium.copyWith(
+            color: selected ? AppColor.inkDark : AppColor.textPrimary,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+          ),
         ),
       ),
     );
   }
 
   Future<void> _openCalendar(BuildContext context) async {
-    final en = MyApp.isEnglish.value;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     var picked = controller.selectedDate.value;
@@ -150,8 +143,8 @@ class StepDatetime extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  en ? 'Pick a date' : 'তারিখ বেছে নিন',
-                  style: _pageHeading(en),
+                  'Pick a date',
+                  style: AppTextStyle.heading3,
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -171,8 +164,8 @@ class StepDatetime extends StatelessWidget {
                     TextButton(
                       onPressed: () => Navigator.of(dialogContext).pop(),
                       child: Text(
-                        en ? 'Cancel' : 'বাতিল',
-                        style: _sectionHint(en),
+                        'Cancel',
+                        style: AppTextStyle.bodyMedium,
                       ),
                     ),
                     TextButton(
@@ -181,8 +174,10 @@ class StepDatetime extends StatelessWidget {
                         Navigator.of(dialogContext).pop();
                       },
                       child: Text(
-                        en ? 'Done' : 'নির্বাচন',
-                        style: _actionText(en),
+                        'Done',
+                        style: AppTextStyle.labelMedium.copyWith(
+                          color: AppColor.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -196,8 +191,6 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _datePickerField({required BuildContext context}) {
-    final en = MyApp.isEnglish.value;
-
     return Obx(() {
       final selected = controller.selectedDate.value;
 
@@ -220,20 +213,27 @@ class StepDatetime extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      en ? 'Selected date' : 'নির্বাচিত তারিখ',
-                      style: _fieldLabel(en),
+                      'Selected date',
+                      style: AppTextStyle.labelSmall.copyWith(
+                        color: AppColor.textSecondary,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       DateFormat('EEEE, d MMMM yyyy').format(selected),
-                      style: _fieldValue(en),
+                      style: AppTextStyle.labelMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.textPrimary,
+                      ),
                     ),
                   ],
                 ),
               ),
               Text(
-                en ? 'Change' : 'পরিবর্তন',
-                style: _actionText(en),
+                'Change',
+                style: AppTextStyle.labelMedium.copyWith(
+                  color: AppColor.primary,
+                ),
               ),
               const SizedBox(width: 4),
               const Icon(Icons.chevron_right_rounded,
@@ -267,8 +267,6 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _startTimeSection({required BuildContext context}) {
-    final en = MyApp.isEnglish.value;
-
     return Obx(() {
       final selected = controller.selectedStartTime.value;
       final isValid = controller.isStartTimeValid;
@@ -283,8 +281,7 @@ class StepDatetime extends StatelessWidget {
               final isSelected = selected.hour == preset.hour &&
                   selected.minute == preset.minute;
               return _quickChip(
-                en: en,
-                label: en ? preset.en : preset.bn,
+                label: preset.label,
                 selected: isSelected,
                 onTap: () => controller.selectStartTimePreset(
                   preset.hour,
@@ -320,20 +317,27 @@ class StepDatetime extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          en ? 'Start time' : 'শুরুর সময়',
-                          style: _fieldLabel(en),
+                          'Start time',
+                          style: AppTextStyle.labelSmall.copyWith(
+                            color: AppColor.textSecondary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           controller.startTimeLabel,
-                          style: _fieldValue(en),
+                          style: AppTextStyle.labelMedium.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.textPrimary,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    en ? 'Change' : 'পরিবর্তন',
-                    style: _actionText(en),
+                    'Change',
+                    style: AppTextStyle.labelMedium.copyWith(
+                      color: AppColor.primary,
+                    ),
                   ),
                   const SizedBox(width: 4),
                   const Icon(Icons.chevron_right_rounded,
@@ -345,10 +349,10 @@ class StepDatetime extends StatelessWidget {
           if (!isValid) ...[
             const SizedBox(height: 8),
             Text(
-              en
-                  ? 'This time has already passed. Pick a later time.'
-                  : 'এই সময় ইতিমধ্যে পেরিয়ে গেছে। পরের সময় বেছে নিন।',
-              style: _errorText(en),
+              'This time has already passed. Pick a later time.',
+              style: AppTextStyle.bodyMedium.copyWith(
+                color: AppColor.alertRed,
+              ),
             ),
           ],
         ],
@@ -357,7 +361,6 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _startLocationCard({required BuildContext context}) {
-    final en = MyApp.isEnglish.value;
     final loc = Get.find<LocationService>();
 
     return Obx(() {
@@ -369,14 +372,11 @@ class StepDatetime extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _locationOptionTile(
-            en: en,
             icon: Icons.my_location_rounded,
-            title: en ? 'Current location' : 'বর্তমান লোকেশন',
+            title: 'Current location',
             subtitle: useCurrent && label.isNotEmpty
                 ? label
-                : (useCurrent
-                    ? (en ? 'Fetching location…' : 'লোকেশন লোড হচ্ছে…')
-                    : null),
+                : (useCurrent ? 'Fetching location…' : null),
             selected: useCurrent,
             onTap: () => controller.setUseCurrentLocationAsStart(true),
           ),
@@ -389,16 +389,16 @@ class StepDatetime extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      en
-                          ? 'Location permission is needed to plan from where you are.'
-                          : 'আপনার অবস্থান থেকে ট্রিপ প্ল্যান করতে লোকেশন অনুমতি দিন।',
-                      style: _sectionHint(en),
+                      'Location permission is needed to plan from where you are.',
+                      style: AppTextStyle.bodyMedium,
                     ),
                     TextButton(
                       onPressed: controller.enableLocationForTrip,
                       child: Text(
-                        en ? 'Enable location' : 'লোকেশন চালু করুন',
-                        style: _actionText(en),
+                        'Enable location',
+                        style: AppTextStyle.labelMedium.copyWith(
+                          color: AppColor.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -412,17 +412,18 @@ class StepDatetime extends StatelessWidget {
                   icon: const Icon(Icons.refresh_rounded,
                       size: 18, color: AppColor.primary),
                   label: Text(
-                    en ? 'Refresh' : 'রিফ্রেশ',
-                    style: _actionText(en),
+                    'Refresh',
+                    style: AppTextStyle.labelMedium.copyWith(
+                      color: AppColor.primary,
+                    ),
                   ),
                 ),
               ),
           ],
           const SizedBox(height: 10),
           _locationOptionTile(
-            en: en,
             icon: Icons.edit_location_alt_rounded,
-            title: en ? 'Select manually' : 'নিজে বেছে নিন',
+            title: 'Select manually',
             subtitle: !useCurrent && label.isNotEmpty ? label : null,
             selected: !useCurrent,
             onTap: () => controller.setUseCurrentLocationAsStart(false),
@@ -439,7 +440,6 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _locationOptionTile({
-    required bool en,
     required IconData icon,
     required String title,
     String? subtitle,
@@ -469,12 +469,19 @@ class StepDatetime extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: _tileTitle(en)),
+                  Text(
+                    title,
+                    style: AppTextStyle.labelMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: _tileSubtitle(en),
+                      style: AppTextStyle.bodyMedium.copyWith(
+                        color: AppColor.textSecondary,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -496,48 +503,39 @@ class StepDatetime extends StatelessWidget {
   }
 
   Widget _startDistrictDropdown() {
-    final en = MyApp.isEnglish.value;
-
     return Obx(() {
       final districts = controller.districts;
       final selected = controller.selectedStartDistrict.value;
 
       return _locationDropdownField<DistrictModel>(
-        en: en,
-        label: en ? 'District' : 'জেলা',
-        hint: en ? 'Select district' : 'জেলা বেছে নিন',
+        label: 'District',
+        hint: 'Select district',
         value: selected,
         items: districts,
-        itemLabel: (d) => en ? d.name : d.nameBn,
+        itemLabel: (d) => d.name,
         onChanged: controller.selectStartDistrict,
       );
     });
   }
 
   Widget _startSubDistrictDropdown() {
-    final en = MyApp.isEnglish.value;
-
     return Obx(() {
       final subDistricts = controller.startSubDistricts;
       final selected = controller.selectedStartSubDistrict.value;
       final hasDistrict = controller.selectedStartDistrict.value != null;
 
       return _locationDropdownField<SubDistrictModel>(
-        en: en,
-        label: en ? 'Sub-district' : 'উপজেলা',
-        hint: hasDistrict
-            ? (en ? 'Select sub-district' : 'উপজেলা বেছে নিন')
-            : (en ? 'Select district first' : 'আগে জেলা বেছে নিন'),
+        label: 'Sub-district',
+        hint: hasDistrict ? 'Select sub-district' : 'Select district first',
         value: selected,
         items: subDistricts,
-        itemLabel: (s) => en ? s.name : s.nameBn,
+        itemLabel: (s) => s.name,
         onChanged: hasDistrict ? controller.selectStartSubDistrict : null,
       );
     });
   }
 
   Widget _locationDropdownField<T>({
-    required bool en,
     required String label,
     required String hint,
     required T? value,
@@ -550,7 +548,9 @@ class StepDatetime extends StatelessWidget {
       children: [
         Text(
           label,
-          style: _fieldLabel(en),
+          style: AppTextStyle.labelSmall.copyWith(
+            color: AppColor.textSecondary,
+          ),
         ),
         const SizedBox(height: 8),
         Container(
@@ -566,7 +566,7 @@ class StepDatetime extends StatelessWidget {
               value: value,
               hint: Text(
                 hint,
-                style: _sectionHint(en),
+                style: AppTextStyle.bodyMedium,
               ),
               icon: const Icon(Icons.keyboard_arrow_down_rounded,
                   color: AppColor.primary),
@@ -577,7 +577,7 @@ class StepDatetime extends StatelessWidget {
                       value: item,
                       child: Text(
                         itemLabel(item),
-                        style: _dropdownItem(en),
+                        style: AppTextStyle.bodyMedium,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -590,61 +590,4 @@ class StepDatetime extends StatelessWidget {
       ],
     );
   }
-
-  TextStyle _pageHeading(bool en) => en
-      ? AppTextStyle.heading3
-      : AppTextStyle.banglaHeading.copyWith(fontSize: 18);
-
-  TextStyle _sectionHint(bool en) => en
-      ? AppTextStyle.bodyMedium
-      : AppTextStyle.banglaBody;
-
-  TextStyle _fieldLabel(bool en) => en
-      ? AppTextStyle.labelSmall.copyWith(color: AppColor.textSecondary)
-      : AppTextStyle.banglaBody.copyWith(
-          fontSize: 12,
-          color: AppColor.textSecondary,
-        );
-
-  TextStyle _fieldValue(bool en) => en
-      ? AppTextStyle.labelMedium.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColor.textPrimary,
-        )
-      : AppTextStyle.banglaLabel.copyWith(fontWeight: FontWeight.w600);
-
-  TextStyle _chipLabel(bool en, {required bool selected}) => en
-      ? AppTextStyle.labelMedium.copyWith(
-          color: selected ? AppColor.inkDark : AppColor.textPrimary,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-        )
-      : AppTextStyle.banglaLabel.copyWith(
-          color: selected ? AppColor.inkDark : AppColor.textPrimary,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-        );
-
-  TextStyle _tileTitle(bool en) => en
-      ? AppTextStyle.labelMedium.copyWith(fontWeight: FontWeight.w600)
-      : AppTextStyle.banglaLabel.copyWith(fontWeight: FontWeight.w600);
-
-  TextStyle _tileSubtitle(bool en) => en
-      ? AppTextStyle.bodySmall.copyWith(color: AppColor.textSecondary)
-      : AppTextStyle.banglaBody.copyWith(
-          fontSize: 12,
-          color: AppColor.textSecondary,
-        );
-
-  TextStyle _actionText(bool en) => en
-      ? AppTextStyle.labelMedium.copyWith(color: AppColor.primary)
-      : AppTextStyle.banglaLabel.copyWith(color: AppColor.primary);
-
-  TextStyle _dropdownItem(bool en) =>
-      en ? AppTextStyle.bodyMedium : AppTextStyle.banglaBody;
-
-  TextStyle _errorText(bool en) => en
-      ? AppTextStyle.bodySmall.copyWith(color: AppColor.alertRed)
-      : AppTextStyle.banglaBody.copyWith(
-          fontSize: 12,
-          color: AppColor.alertRed,
-        );
 }

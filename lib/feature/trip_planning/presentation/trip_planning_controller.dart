@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/api_keys.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/core/services/gemini_transport_filter_service.dart';
@@ -532,31 +531,24 @@ class TripPlanningController extends GetxController {
   }
 
   void _showDatetimeValidationError() {
-    final en = MyApp.isEnglish.value;
     if (!isStartTimeValid) {
       Get.snackbar(
-        en ? 'Invalid start time' : 'ভুল শুরুর সময়',
-        en
-            ? 'Pick a start time that is still in the future.'
-            : 'এমন একটি সময় বেছে নিন যা এখনো আসেনি।',
+        'Invalid start time',
+        'Pick a start time that is still in the future.',
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
     }
     if (useCurrentLocationAsStart.value) {
       Get.snackbar(
-        en ? 'Location required' : 'লোকেশন প্রয়োজন',
-        en
-            ? 'Enable location to use your current position as the trip start.'
-            : 'ট্রিপ শুরু করতে বর্তমান লোকেশন চালু করুন।',
+        'Location required',
+        'Enable location to use your current position as the trip start.',
         snackPosition: SnackPosition.BOTTOM,
       );
     } else {
       Get.snackbar(
-        en ? 'Start location required' : 'শুরুর লোকেশন প্রয়োজন',
-        en
-            ? 'Select a district and sub-district for your trip start.'
-            : 'ট্রিপ শুরুর জন্য জেলা ও উপজেলা বেছে নিন।',
+        'Start location required',
+        'Select a district and sub-district for your trip start.',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

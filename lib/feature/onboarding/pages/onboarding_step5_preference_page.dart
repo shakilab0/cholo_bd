@@ -1,12 +1,9 @@
+import 'package:cholo_bd/config/app_colors.dart';
+import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
-import 'package:cholo_bd/config/app_colors.dart';
-import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
 
 class OnboardingStep5PreferencePage extends StatefulWidget {
   const OnboardingStep5PreferencePage({super.key});
@@ -21,15 +18,15 @@ class _OnboardingStep5PreferencePageState extends State<OnboardingStep5Preferenc
 
   static const List<LocationTypeOption> locationTypeOptions = [
     LocationTypeOption(
-      label: 'Hill / Pahar',
+      label: 'Hill',
       icon: Icons.terrain_rounded,
     ),
     LocationTypeOption(
-      label: 'River / Nodi',
+      label: 'River',
       icon: Icons.waves_rounded,
     ),
     LocationTypeOption(
-      label: 'Sea / Sagor',
+      label: 'Sea',
       icon: Icons.beach_access_rounded,
     ),
     LocationTypeOption(
@@ -86,7 +83,7 @@ class _OnboardingStep5PreferencePageState extends State<OnboardingStep5Preferenc
               child: TextButton(
                 onPressed: goToAuth,
                 child: Text(
-                  AppStrings.skip,
+                  'Skip',
                   style: AppTextStyle.labelMedium
                       .copyWith(color: AppColor.textSecondary),
                 ),
@@ -218,7 +215,7 @@ class _OnboardingStep5PreferencePageState extends State<OnboardingStep5Preferenc
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(AppStrings.done, style: AppTextStyle.button),
+                      child: Text('Done', style: AppTextStyle.button),
                     ),
                   ),
                 ),

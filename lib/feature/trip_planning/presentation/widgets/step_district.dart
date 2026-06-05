@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/feature/homepage/presentation/widgets/district_card.dart';
@@ -71,17 +70,15 @@ class StepDistrict extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Obx(() => Text(
-                          MyApp.isEnglish.value
-                              ? district.name
-                              : district.nameBn,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColor.textPrimary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )),
+                    Text(
+                      district.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: AppColor.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 10),
                   ],
                 );

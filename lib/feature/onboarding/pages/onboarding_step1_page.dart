@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
-import 'package:cholo_bd/config/constant/constantText.dart';
-import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
 
 class OnboardingStep1Page extends StatelessWidget {
   const OnboardingStep1Page({super.key});
@@ -21,8 +19,7 @@ class OnboardingStep1Page extends StatelessWidget {
               right: 16,
               child: TextButton(
                 onPressed: () => Get.toNamed(AppRoutes.onboardingStep2),
-                child: Text(
-                  AppStrings.skip,
+                child: Text('Skip',
                   style: AppTextStyle.labelMedium
                       .copyWith(color: AppColor.textSecondary),
                 ),
@@ -48,15 +45,11 @@ class OnboardingStep1Page extends StatelessWidget {
                               size: 80, color: AppColor.primary),
                         ),
                         const SizedBox(height: 48),
-                        Text(AppStrings.onboarding1Title,
+                        Text('Discover Hidden Gems',
                             style: AppTextStyle.heading2,
                             textAlign: TextAlign.center),
-                        const SizedBox(height: 8),
-                        Text(AppStrings.onboarding1TitleBn,
-                            style: AppTextStyle.banglaHeading,
-                            textAlign: TextAlign.center),
                         const SizedBox(height: 16),
-                        Text(AppStrings.onboarding1Sub,
+                        Text('Explore beautiful places across Bangladesh',
                             style: AppTextStyle.bodyMedium,
                             textAlign: TextAlign.center),
                       ],
@@ -65,8 +58,7 @@ class OnboardingStep1Page extends StatelessWidget {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(5,
-                    (i) => AnimatedContainer(
+                  children: List.generate(5, (i) => AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       width: i == 0 ? 24 : 8,
@@ -75,8 +67,7 @@ class OnboardingStep1Page extends StatelessWidget {
                         color: i == 0 ? AppColor.primary : AppColor.border,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                    ),
-                  ),
+                    )),
                 ),
                 const SizedBox(height: 32),
                 Padding(
@@ -85,7 +76,7 @@ class OnboardingStep1Page extends StatelessWidget {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         Get.toNamed(AppRoutes.onboardingStep2);
                       },
                       style: ElevatedButton.styleFrom(
@@ -94,7 +85,7 @@ class OnboardingStep1Page extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(AppStrings.next, style: AppTextStyle.button),
+                      child: Text('Next', style: AppTextStyle.button),
                     ),
                   ),
                 ),

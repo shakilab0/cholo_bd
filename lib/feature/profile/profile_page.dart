@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cholo_bd/app/my_app.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
@@ -26,9 +25,7 @@ class ProfilePage extends StatelessWidget {
                     profileHeader(controller: c, context: context),
                     const SizedBox(height: 24),
                     statsRow(controller: c, context: context),
-                    const SizedBox(height: 24, ),
-                    languageToggle(controller: c,context: context),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     notificationTestButton(controller: c),
                     const SizedBox(height: 16),
                     settingsSection(context: context),
@@ -122,79 +119,6 @@ class ProfilePage extends StatelessWidget {
           Text(value,
               style: AppTextStyle.heading3.copyWith(color: AppColor.primary)),
           Text(label, style: AppTextStyle.caption),
-        ],
-      ),
-    );
-  }
-
-  Widget languageToggle({required BuildContext context,required ProfileController controller}){
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColor.bgCard,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColor.border),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.translate_rounded,
-              color: AppColor.primary, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Language', style: AppTextStyle.labelSmall.copyWith(
-                    color: AppColor.textPrimary, fontWeight: FontWeight.w600)),
-                Obx(() => Text(
-                  MyApp.isEnglish.value ? 'English' : 'বাংলা',
-                  style: AppTextStyle.caption,
-                )),
-              ],
-            ),
-          ),
-          Obx(() => GestureDetector(
-            onTap: controller.toggleLanguage,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 56,
-              height: 28,
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                color: MyApp.isEnglish.value
-                    ? AppColor.primary
-                    : AppColor.bgCardLight,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Stack(
-                children: [
-                  AnimatedAlign(
-                    duration: const Duration(milliseconds: 200),
-                    alignment: MyApp.isEnglish.value
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: Container(
-                      width: 22,
-                      height: 22,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          MyApp.isEnglish.value ? 'EN' : 'বাং',
-                          style: const TextStyle(
-                              fontSize: 7,
-                              fontWeight: FontWeight.w800,
-                              color: AppColor.inkDark),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
         ],
       ),
     );

@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cholo_bd/app/my_app.dart';
-import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/feature/homepage/data/model/district_model.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
@@ -38,19 +36,12 @@ class HomePageController extends GetxController {
   // Season banner (derived from current month)
   String get seasonBannerText {
     final month = DateTime.now().month;
-    final bool en = MyApp.isEnglish.value;
     if (month >= 6 && month <= 9) {
-      return en
-          ? 'Monsoon Season — Enjoy the lush green Sundarbans'
-          : 'বর্ষা মৌসুম — সবুজ সুন্দরবনের সৌন্দর্য উপভোগ করুন';
+      return 'Monsoon Season — Enjoy the lush green Sundarbans';
     } else if (month >= 12 || month <= 2) {
-      return en
-          ? "Winter Season — Best time for Cox's Bazar beach"
-          : 'শীতের মৌসুম — কক্সবাজারের সেরা সময়';
+      return "Winter Season — Best time for Cox's Bazar beach";
     } else {
-      return en
-          ? 'Summer — Explore the hill tracts of Bandarban'
-          : 'গ্রীষ্মকাল — বান্দরবানের পার্বত্য অঞ্চল অন্বেষণ করুন';
+      return 'Summer — Explore the hill tracts of Bandarban';
     }
   }
 
@@ -101,11 +92,6 @@ class HomePageController extends GetxController {
       (data) => featuredPlaces.value = data,
     );
     isLoadingFeatured.value = false;
-  }
-
-  void toggleLanguage() {
-    MyApp.isEnglish.value = !MyApp.isEnglish.value;
-    saveLanguageIsEnglish(MyApp.isEnglish.value);
   }
 
   void navigateToProfile() {
