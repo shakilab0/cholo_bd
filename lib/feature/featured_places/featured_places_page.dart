@@ -56,8 +56,7 @@ class FeaturedPlacesPage extends GetView<FeaturedPlacesController> {
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (_, i) => _PlaceCard(
             place: controller.places[i],
-            onTap: () =>
-                controller.navigateToPlaceDetails(controller.places[i]),
+            onTap: () => controller.navigateToPlaceDetails(controller.places[i]),
           ),
         );
       }),

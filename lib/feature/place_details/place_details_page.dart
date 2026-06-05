@@ -142,7 +142,7 @@ class PlaceDetailsPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   Container(
                     color: Colors.transparent,
-                    child: _InfoGrid(place: place),
+                    child: _infoGrid(place: place, context: context),
                   ),
                   
                   const SizedBox(height: 20),
@@ -183,14 +183,8 @@ class PlaceDetailsPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _InfoGrid extends StatelessWidget {
-  final dynamic place;
-  const _InfoGrid({required this.place});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _infoGrid({required BuildContext context,required dynamic place}) {
     return GridView.count(
       padding: EdgeInsets.zero,
       crossAxisCount: 2,
@@ -200,47 +194,42 @@ class _InfoGrid extends StatelessWidget {
       mainAxisSpacing: 12,
       childAspectRatio: 2.6,
       children: [
-        _InfoTile(
+        _infoTile(
           icon: Icons.schedule_rounded,
           label: 'Visit Duration',
           value: place.visitDuration,
+          context: context,
+  
         ),
-        _InfoTile(
+        _infoTile(
           icon: Icons.wb_sunny_rounded,
           label: 'Best Time',
           value: place.bestTime,
+          context: context,
         ),
-        _InfoTile(
+        _infoTile(
           icon: Icons.access_time_rounded,
           label: 'Opening Hours',
           value: place.openingHours,
+          context: context,
         ),
-        _InfoTile(
+        _infoTile(
           icon: Icons.payments_rounded,
           label: 'Entry Fee',
           value: place.isFreeEntry ? 'Free' : '৳${place.entryFee.toInt()}',
           valueColor: place.isFreeEntry ? AppColor.primary : null,
+          context: context,
         ),
       ],
     );
   }
-}
 
-class _InfoTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? valueColor;
-
-  const _InfoTile({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _infoTile({
+    required BuildContext context,
+    required IconData icon,
+    required  String label,
+    required  String value,
+    Color? valueColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -275,4 +264,5 @@ class _InfoTile extends StatelessWidget {
       ),
     );
   }
+  
 }

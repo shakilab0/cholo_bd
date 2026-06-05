@@ -49,8 +49,7 @@ class DistrictPlacesController extends GetxController {
     isLoadingPlaces.value = false;
   }
 
-  List<PlaceModel> _seedForDistrict() =>
-      seedPlaces.where((p) => p.districtId == district.id).toList();
+  List<PlaceModel> _seedForDistrict() => seedPlaces.where((p) => p.districtId == district.id).toList();
 
   void _applyPlaces(List<PlaceModel> places) {
     allPlaces.assignAll(places);

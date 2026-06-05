@@ -28,7 +28,7 @@ class TripsPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          _FilterBar(controller: controller),
+          _filterBar(controller: controller, context: context),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -37,7 +37,7 @@ class TripsPage extends StatelessWidget {
               }
               final trips = controller.filteredTrips;
               if (trips.isEmpty) {
-                return _EmptyState(controller: controller);
+                return _emptyState(controller: controller, context: context);
               }
               return RefreshIndicator(
                 color: AppColor.primary,
@@ -48,7 +48,7 @@ class TripsPage extends StatelessWidget {
                   itemCount: trips.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (_, i) =>
-                      _TripCard(trip: trips[i], controller: controller),
+                      _tripCard(trip: trips[i], controller: controller,  context: context),
                 ),
               );
             }),
@@ -57,53 +57,43 @@ class TripsPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _FilterBar extends StatelessWidget {
-  final TripsController controller;
-  const _FilterBar({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _filterBar({required BuildContext context ,required TripsController controller}) {
     return Obx(() {
       final selected = controller.selectedFilter.value;
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
         child: Row(
           children: [
-            _FilterChip(
+            _filterChip(
               label: 'Upcoming',
               selected: selected == 'upcoming',
               onTap: () => controller.setFilter('upcoming'),
+              context: context,
             ),
             const SizedBox(width: 8),
-            _FilterChip(
+            _filterChip(
               label: 'All',
               selected: selected == 'all',
               onTap: () => controller.setFilter('all'),
+              context: context,
             ),
             const SizedBox(width: 8),
-            _FilterChip(
+            _filterChip(
               label: 'Completed',
               selected: selected == 'completed',
               onTap: () => controller.setFilter('completed'),
+              context: context,
             ),
           ],
         ),
       );
     });
   }
-}
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  const _FilterChip(
-      {required this.label, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _filterChip({required BuildContext context,required String label,
+    required bool selected,
+    required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -125,135 +115,125 @@ class _FilterChip extends StatelessWidget {
       ),
     );
   }
-}
 
-class _TripCard extends StatelessWidget {
-  final TripModel trip;
-  final TripsController controller;
-  const _TripCard({required this.trip, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _tripCard({required BuildContext context,required TripModel trip,required TripsController controller}) {
     final statusColor = trip.status == TripStatus.upcoming
         ? AppColor.primary
         : trip.status == TripStatus.active
-            ? AppColor.accent
-            : AppColor.textSecondary;
+        ? AppColor.accent
+        : AppColor.textSecondary;
 
     return GestureDetector(
-      onTap: () => Get.toNamed(AppRoutes.tripDetails, arguments: trip),
-      onLongPress: controller.canCancelTrip(trip)
-          ? () => controller.confirmCancelTrip(trip)
-          : null,
-      child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColor.bgCard,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColor.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        onTap: () => Get.toNamed(AppRoutes.tripDetails, arguments: trip),
+        onLongPress: controller.canCancelTrip(trip)
+            ? () => controller.confirmCancelTrip(trip)
+            : null,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColor.bgCard,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColor.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(trip.name,
-                    style: AppTextStyle.sectionTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              Container(
-                padding:
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(trip.name,
+                        style: AppTextStyle.sectionTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                  Container(
+                    padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  trip.status.name[0].toUpperCase() +
-                      trip.status.name.substring(1),
-                  style: AppTextStyle.labelSmall.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10),
-                ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      trip.status.name[0].toUpperCase() +
+                          trip.status.name.substring(1),
+                      style: AppTextStyle.labelSmall.copyWith(
+                          color: statusColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              _MetaItem(
-                icon: Icons.location_on_rounded,
-                text: trip.districtName,
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  _metaItem(
+                    icon: Icons.location_on_rounded,
+                    text: trip.districtName,
+                    context: context
+                  ),
+                  const SizedBox(width: 16),
+                  _metaItem(
+                    icon: Icons.event_rounded,
+                    text: trip.hasStartTime
+                        ? '${DateFormat('d MMM').format(trip.tripDate)} · ${trip.startTimeDisplay}'
+                        : DateFormat('d MMM yyyy').format(trip.tripDate),
+                    context: context
+                  ),
+                  const SizedBox(width: 16),
+                  _metaItem(
+                    icon: Icons.place_rounded,
+                    text: '${trip.places.length} place${trip.places.length == 1 ? '' : 's'}',
+                    context: context
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              _MetaItem(
-                icon: Icons.event_rounded,
-                text: trip.hasStartTime
-                    ? '${DateFormat('d MMM').format(trip.tripDate)} · ${trip.startTimeDisplay}'
-                    : DateFormat('d MMM yyyy').format(trip.tripDate),
-              ),
-              const SizedBox(width: 16),
-              _MetaItem(
-                icon: Icons.place_rounded,
-                text: '${trip.places.length} place${trip.places.length == 1 ? '' : 's'}',
-              ),
-            ],
-          ),
-          if (trip.places.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            const Divider(color: AppColor.border, height: 1),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: trip.places
-                  .take(3)
-                  .map((p) => Container(
+              if (trip.places.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                const Divider(color: AppColor.border, height: 1),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: trip.places
+                      .take(3)
+                      .map((p) => Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColor.bgCardLight,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(p.name,
+                        style: AppTextStyle.labelSmall.copyWith(
+                            fontSize: 10,
+                            color: AppColor.textSecondary)),
+                  ))
+                      .toList()
+                    ..addAll(trip.places.length > 3
+                        ? [
+                      Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColor.bgCardLight,
+                          color: AppColor.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Text(p.name,
+                        child: Text('+${trip.places.length - 3} more',
                             style: AppTextStyle.labelSmall.copyWith(
-                                fontSize: 10,
-                                color: AppColor.textSecondary)),
-                      ))
-                  .toList()
-                ..addAll(trip.places.length > 3
-                    ? [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColor.primary.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text('+${trip.places.length - 3} more',
-                              style: AppTextStyle.labelSmall.copyWith(
-                                  fontSize: 10, color: AppColor.primary)),
-                        )
-                      ]
-                    : []),
-            ),
-          ],
-        ],
-      ),
-    ));
+                                fontSize: 10, color: AppColor.primary)),
+                      )
+                    ]
+                        : []),
+                ),
+              ],
+            ],
+          ),
+        ));
   }
-}
 
-class _MetaItem extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const _MetaItem({required this.icon, required this.text});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _metaItem({required BuildContext context, required IconData icon, required String text}) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -265,14 +245,8 @@ class _MetaItem extends StatelessWidget {
       ],
     );
   }
-}
 
-class _EmptyState extends StatelessWidget {
-  final TripsController controller;
-  const _EmptyState({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _emptyState({required BuildContext context,required TripsController controller}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -298,7 +272,7 @@ class _EmptyState extends StatelessWidget {
                 backgroundColor: AppColor.primary,
                 foregroundColor: AppColor.inkDark,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
               ),
@@ -312,4 +286,6 @@ class _EmptyState extends StatelessWidget {
       ),
     );
   }
+
+
 }

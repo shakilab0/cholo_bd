@@ -41,7 +41,7 @@ class DistrictModel {
       };
 }
 
-// Seed data used as offline fallback when Appwrite isn't configured
+
 final List<DistrictModel> seedDistricts = [
   // Dhaka Division
   const DistrictModel(id: 'dhaka', name: 'Dhaka', nameBn: 'ঢাকা', description: 'The vibrant capital city known for its rich history and Mughal architecture.', coverImageUrl: '', placeCount: 42, latitude: 23.8103, longitude: 90.4125),

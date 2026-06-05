@@ -16,29 +16,23 @@ class DistrictPlacesPage extends StatelessWidget {
       backgroundColor: AppColor.bgDark,
       body: CustomScrollView(
         slivers: [
-          _DistrictHeroAppBar(controller: c),
+          _districtHeroAppBar(controller: c, context: context),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _FilterBar(controller: c),
-                _PlacesList(controller: c),
+                _filterBar(controller: c, context: context),
+                _placesList(controller: c),
               ],
             ),
           ),
         ],
       ),
-      bottomNavigationBar: _PlanTripBar(controller: c),
+      bottomNavigationBar: _planTripBar(controller: c, context: context),
     );
   }
-}
 
-class _DistrictHeroAppBar extends StatelessWidget {
-  final DistrictPlacesController controller;
-  const _DistrictHeroAppBar({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _districtHeroAppBar({required BuildContext context,required DistrictPlacesController controller}) {
     final district = controller.district;
     return SliverAppBar(
       expandedHeight: 240,
@@ -66,11 +60,11 @@ class _DistrictHeroAppBar extends StatelessWidget {
             children: [
               district.coverImageUrl.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: district.coverImageUrl,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) =>
-                          Container(color: AppColor.bgCard),
-                    )
+                imageUrl: district.coverImageUrl,
+                fit: BoxFit.cover,
+                errorWidget: (_, __, ___) =>
+                    Container(color: AppColor.bgCard),
+              )
                   : Container(color: AppColor.bgCard),
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -90,21 +84,14 @@ class _DistrictHeroAppBar extends StatelessWidget {
       ),
     );
   }
-}
 
-class _FilterBar extends StatelessWidget {
-  final DistrictPlacesController controller;
-  const _FilterBar({required this.controller});
-
-  static const _filters = [
-    ('all', 'All'),
-    ('popular', 'Popular'),
-    ('top_rated', 'Top Rated'),
-    ('free', 'Free Entry'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _filterBar({required BuildContext context,required DistrictPlacesController controller}) {
+     const _filters = [
+      ('all', 'All'),
+      ('popular', 'Popular'),
+      ('top_rated', 'Top Rated'),
+      ('free', 'Free Entry'),
+    ];
     return Obx(() {
       final active = controller.activeFilter.value;
       return SizedBox(
@@ -114,29 +101,20 @@ class _FilterBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: _filters
               .map((f) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: _FilterChip(
-                      label: f.$2,
-                      selected: active == f.$1,
-                      onTap: () => controller.setFilter(f.$1),
-                    ),
-                  ))
+            padding: const EdgeInsets.only(right: 8),
+            child: _filterChip(
+              label: f.$2,
+              selected: active == f.$1,
+              onTap: () => controller.setFilter(f.$1),
+            ),
+          ))
               .toList(),
         ),
       );
     });
   }
-}
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  const _FilterChip(
-      {required this.label, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _filterChip({ required String label, required bool selected,required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -158,14 +136,8 @@ class _FilterChip extends StatelessWidget {
       ),
     );
   }
-}
 
-class _PlacesList extends StatelessWidget {
-  final DistrictPlacesController controller;
-  const _PlacesList({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _placesList({required DistrictPlacesController controller}) {
     return Obx(() {
       if (controller.isLoadingPlaces.value) {
         return const Padding(
@@ -193,19 +165,12 @@ class _PlacesList extends StatelessWidget {
         itemCount: places.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, i) =>
-            _PlaceCard(place: places[i], controller: controller),
+            _placeCard(place: places[i], controller: controller),
       );
     });
   }
-}
 
-class _PlaceCard extends StatelessWidget {
-  final PlaceModel place;
-  final DistrictPlacesController controller;
-  const _PlaceCard({required this.place, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _placeCard({required PlaceModel  place, required DistrictPlacesController controller}) {
     return GestureDetector(
       onTap: () => controller.navigateToPlaceDetails(place),
       child: Container(
@@ -222,16 +187,16 @@ class _PlaceCard extends StatelessWidget {
               tag: 'place_${place.id}',
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(15)),
+                const BorderRadius.vertical(top: Radius.circular(15)),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: place.images.isNotEmpty
                       ? CachedNetworkImage(
-                          imageUrl: place.images.first,
-                          fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) =>
-                              Container(color: AppColor.bgCardLight),
-                        )
+                    imageUrl: place.images.first,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, __, ___) =>
+                        Container(color: AppColor.bgCardLight),
+                  )
                       : Container(color: AppColor.bgCardLight),
                 ),
               ),
@@ -302,16 +267,16 @@ class _PlaceCard extends StatelessWidget {
                       children: place.tags
                           .take(3)
                           .map((t) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColor.bgCardLight,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text('#$t',
-                                    style: AppTextStyle.caption.copyWith(
-                                        color: AppColor.textSecondary)),
-                              ))
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColor.bgCardLight,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text('#$t',
+                            style: AppTextStyle.caption.copyWith(
+                                color: AppColor.textSecondary)),
+                      ))
                           .toList(),
                     ),
                   ],
@@ -323,14 +288,8 @@ class _PlaceCard extends StatelessWidget {
       ),
     );
   }
-}
 
-class _PlanTripBar extends StatelessWidget {
-  final DistrictPlacesController controller;
-  const _PlanTripBar({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _planTripBar({required BuildContext context,required DistrictPlacesController controller}) {
     return Container(
       padding: EdgeInsets.fromLTRB(
           16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
@@ -353,10 +312,11 @@ class _PlanTripBar extends StatelessWidget {
           label: Text(
             'Plan a Trip to ${controller.district.name} ($count places)',
             style:
-                AppTextStyle.sectionTitle.copyWith(color: AppColor.inkDark),
+            AppTextStyle.sectionTitle.copyWith(color: AppColor.inkDark),
           ),
         );
       }),
     );
   }
+  
 }
