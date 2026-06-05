@@ -20,7 +20,7 @@ class SplashScreen extends StatelessWidget {
             // Logo with map-pin drop animation
             TweenAnimationBuilder<double>(
               tween: Tween(begin: -60.0, end: 0.0),
-              duration: const Duration(milliseconds: 700),
+              duration: const Duration(milliseconds: 4000),
               curve: Curves.bounceOut,
               builder: (_, val, child) =>
                   Transform.translate(offset: Offset(0, val), child: child),

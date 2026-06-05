@@ -141,9 +141,7 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    OnboardingController.totalSteps,
-                    (i) => AnimatedContainer(
+                  children: List.generate(5, (i) => AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       width: i == 4 ? 24 : 8,

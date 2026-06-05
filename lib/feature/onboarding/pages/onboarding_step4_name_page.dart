@@ -21,8 +21,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
           ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.top,
+              minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
             ),
             child: Stack(
               children: [
@@ -33,8 +32,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                     onPressed: controller.skip,
                     child: Text(
                       AppStrings.skip,
-                      style: AppTextStyle.labelMedium
-                          .copyWith(color: AppColor.textSecondary),
+                      style: AppTextStyle.labelMedium.copyWith(color: AppColor.textSecondary),
                     ),
                   ),
                 ),
@@ -71,14 +69,6 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                           Text(
                             'What should we call you?',
                             style: AppTextStyle.heading2,
-                            textAlign: TextAlign.center,
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Text(
-                            'আপনার নাম লিখুন',
-                            style: AppTextStyle.banglaHeading,
                             textAlign: TextAlign.center,
                           ),
 
@@ -137,9 +127,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        OnboardingController.totalSteps,
-                            (i) => AnimatedContainer(
+                      children: List.generate(5, (i) => AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           width: i == 3 ? 24 : 8,

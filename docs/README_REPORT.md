@@ -9,6 +9,9 @@
 | `PROJECT_REPORT.docx` | Microsoft Word document (edit in Word / Google Docs) |
 | `generate_report_pdf.py` | PDF generator script |
 | `generate_report_docx.py` | Word (.docx) generator script |
+| `TEAM_PAGE_GUIDE.md` | ১৬ UI অংশ — টিম সদস্যদের Bangla গাইড (সোর্স) |
+| `TEAM_PAGE_GUIDE.docx` | টিম গাইড Word — সদস্যদের দিতে |
+| `generate_team_guide_docx.py` | টিম গাইড DOCX জেনারেটর |
 
 ## Regenerate PDF
 
@@ -32,6 +35,17 @@ python generate_report_docx.py
 ```
 
 Output: `docs/PROJECT_REPORT.docx` — open in **Microsoft Word**, **LibreOffice**, or upload to **Google Docs**.
+
+## Team page guide (১৫ সদস্য, ১৬ UI অংশ)
+
+```bash
+cd docs
+source .venv/bin/activate
+pip install python-docx   # first time only
+python generate_team_guide_docx.py
+```
+
+Output: `docs/TEAM_PAGE_GUIDE.docx` — প্রতিটি সদস্যের Part বুঝতে ও ভাইভায় বলতে। Word-এ সদস্যের নাম/ID তালিকা পূরণ করুন।
 
 ## Before submission
 

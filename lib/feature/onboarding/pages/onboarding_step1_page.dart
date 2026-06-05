@@ -1,3 +1,4 @@
+import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
@@ -64,8 +65,7 @@ class OnboardingStep1Page extends GetView<OnboardingController> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    OnboardingController.totalSteps,
+                  children: List.generate(5,
                     (i) => AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -85,7 +85,9 @@ class OnboardingStep1Page extends GetView<OnboardingController> {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: controller.goToStep2,
+                      onPressed: (){
+                        Get.toNamed(AppRoutes.onboardingStep2);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.primary,
                         shape: RoundedRectangleBorder(

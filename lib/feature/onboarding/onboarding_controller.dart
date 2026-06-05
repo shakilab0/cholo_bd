@@ -4,7 +4,7 @@ import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
 import 'package:cholo_bd/core/routes/routes.dart';
 
 class OnboardingController extends GetxController {
-  static const int totalSteps = 5;
+
 
   final TextEditingController nameController = TextEditingController();
   final RxSet<String> preferredLocationTypes = <String>{}.obs;
@@ -57,11 +57,8 @@ class OnboardingController extends GetxController {
     if (n != null && n.trim().isNotEmpty) nameController.text = n.trim();
   }
 
-  void goToStep2() => Get.toNamed(AppRoutes.onboardingStep2);
 
-  void goToStep3() => Get.toNamed(AppRoutes.onboardingStep3);
 
-  void goToName() => Get.toNamed(AppRoutes.onboardingName);
 
   Future<void> submitNameAndGoToPreference() async {
     final name = nameController.text.trim();
