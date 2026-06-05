@@ -57,6 +57,8 @@ class AuthPage extends GetView<AuthController> {
                 height: 52,
                 child: OutlinedButton.icon(
                   onPressed: (){
+                    Get.snackbar('Coming Soon', 'Google login will be available soon.',
+                        snackPosition: SnackPosition.BOTTOM);
                     ///controller.loginWithGoogle();
                   },
                   icon: const Icon(Icons.g_mobiledata_rounded,
@@ -75,8 +77,7 @@ class AuthPage extends GetView<AuthController> {
               TextButton(
                 onPressed: controller.loginWithPhone,
                 child: Text(AppStrings.loginWithPhone,
-                    style: AppTextStyle.labelMedium
-                        .copyWith(color: AppColor.textSecondary)),
+                    style: AppTextStyle.labelMedium.copyWith(color: AppColor.textSecondary)),
               ),
               const SizedBox(height: 32),
             ],

@@ -18,8 +18,8 @@ class MapPage extends StatelessWidget {
       body: Stack(
         children: [
           _MapView(controller: c),
-          _TopBar(controller: c),
-          _PlaceBottomSheet(controller: c),
+           _TopBar(controller: c),
+           _PlaceBottomSheet(controller: c),
         ],
       ),
     );
@@ -37,7 +37,7 @@ class _MapView extends StatelessWidget {
       return FlutterMap(
         options: MapOptions(
           initialCenter: PlacesMapController.bangladeshCenter,
-          initialZoom: 7,
+          initialZoom: 6,
           onTap: (_, __) => controller.clearSelection(),
         ),
         children: [
@@ -46,16 +46,14 @@ class _MapView extends StatelessWidget {
             userAgentPackageName: 'com.cholobd.app',
           ),
           MarkerLayer(
-            markers: places
-                .map((place) => Marker(
+            markers: places.map((place) => Marker(
                       point: LatLng(place.latitude, place.longitude),
                       width: 40,
                       height: 40,
                       child: GestureDetector(
                         onTap: () => controller.selectPlace(place),
                         child: Obx(() {
-                          final isSelected =
-                              controller.selectedPlace.value?.id == place.id;
+                          final isSelected = controller.selectedPlace.value?.id == place.id;
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             decoration: BoxDecoration(

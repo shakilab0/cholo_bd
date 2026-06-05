@@ -6,7 +6,7 @@ import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/config/constant/constantText.dart';
 import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
 
-class OnboardingStep2Page extends GetView<OnboardingController> {
+class OnboardingStep2Page extends StatelessWidget {
   const OnboardingStep2Page({super.key});
 
   @override
@@ -20,7 +20,7 @@ class OnboardingStep2Page extends GetView<OnboardingController> {
               top: 8,
               right: 16,
               child: TextButton(
-                onPressed: controller.skip,
+                onPressed: () => Get.toNamed(AppRoutes.onboardingStep3),
                 child: Text(
                   AppStrings.skip,
                   style: AppTextStyle.labelMedium

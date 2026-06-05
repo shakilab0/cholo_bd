@@ -1,12 +1,36 @@
+import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/config/constant/constantText.dart';
-import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
+import 'package:cholo_bd/core/routes/routes.dart';
 
-class OnboardingStep4NamePage extends GetView<OnboardingController> {
+
+class OnboardingStep4NamePage extends StatefulWidget {
   const OnboardingStep4NamePage({super.key});
+
+  @override
+  State<OnboardingStep4NamePage> createState() => _OnboardingStep4NamePageState();
+}
+
+class _OnboardingStep4NamePageState extends State<OnboardingStep4NamePage> {
+
+  final TextEditingController nameController = TextEditingController();
+
+  @override
+  void initState() {
+    final n = getDisplayName();
+    if (n != null && n.trim().isNotEmpty) nameController.text = n.trim();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +53,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                   top: 8,
                   right: 16,
                   child: TextButton(
-                    onPressed: controller.skip,
+                    onPressed: () => Get.toNamed(AppRoutes.onboardingPreference),
                     child: Text(
                       AppStrings.skip,
                       style: AppTextStyle.labelMedium.copyWith(color: AppColor.textSecondary),
@@ -75,7 +99,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                           const SizedBox(height: 18),
 
                           TextField(
-                            controller: controller.nameController,
+                            controller: nameController,
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.done,
                             style: AppTextStyle.bodyMedium,
@@ -128,16 +152,16 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(5, (i) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: i == 3 ? 24 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color:
-                            i == 3 ? AppColor.primary : AppColor.border,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: i == 3 ? 24 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color:
+                          i == 3 ? AppColor.primary : AppColor.border,
+                          borderRadius: BorderRadius.circular(4),
                         ),
+                      ),
                       ),
                     ),
 
@@ -149,7 +173,7 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: controller.submitNameAndGoToPreference,
+                          onPressed: submitNameAndGoToPreference,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.primary,
                             shape: RoundedRectangleBorder(
@@ -174,4 +198,21 @@ class OnboardingStep4NamePage extends GetView<OnboardingController> {
       ),
     );
   }
+
+  Future<void> submitNameAndGoToPreference() async {
+    final name = nameController.text.trim();
+    if (name.isEmpty) {
+      Get.snackbar(
+        'Name required',
+        'Please enter your name to continue.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    await saveDisplayName(name);
+    Get.toNamed(AppRoutes.onboardingPreference);
+  }
+
 }
+
+

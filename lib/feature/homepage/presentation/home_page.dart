@@ -20,113 +20,110 @@ class HomePage extends GetView<HomePageController> {
     return Scaffold(
       backgroundColor: AppColor.bgDark,
       body: SafeArea(
-        child: NestedScrollView(
-          headerSliverBuilder: (_, __) => [
-            SliverToBoxAdapter(child: _buildTopBar()),
-          ],
-          body: RefreshIndicator(
-            color: AppColor.primary,
-            backgroundColor: AppColor.bgCard,
-            onRefresh: () async {
+        child: RefreshIndicator(
+          color: AppColor.primary,
+          backgroundColor: AppColor.bgCard,
+          onRefresh: () async {},
 
-            },
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                // Season Banner
-                SeasonBanner(controller: controller),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
 
-                // Featured Places Slider
-                _sectionHeader(
-                  title: AppStrings.featuredPlaces,
-                  onSeeAll: controller.navigateToFeaturedPlaces,
-                ),
+              _buildTopBar(),
 
-                Obx(() => controller.isLoadingFeatured.value
-                    ? _shimmerSlider()
-                    : controller.featuredPlaces.isEmpty
-                        ? const SizedBox.shrink()
-                        : FeaturedSlider(
-                            places: controller.featuredPlaces,
-                            onTap: controller.navigateToPlaceDetails,
-                          )),
+              // Season Banner
+              SeasonBanner(controller: controller),
 
-                const SizedBox(height: 16),
+              // Featured Places Slider
+              _sectionHeader(
+                title: AppStrings.featuredPlaces,
+                onSeeAll: controller.navigateToFeaturedPlaces,
+              ),
 
-                // Quick Actions
-                _sectionHeader(
-                  title: 'Quick Actions',
-                  showSeeAll: false,
-                ),
+              Obx(() => controller.isLoadingFeatured.value
+                  ? _shimmerSlider()
+                  : controller.featuredPlaces.isEmpty
+                  ? const SizedBox.shrink()
+                  : FeaturedSlider(
+                places: controller.featuredPlaces,
+                onTap: controller.navigateToPlaceDetails,
+              )),
 
-                QuickActionsRow(controller: controller),
-                const SizedBox(height: 10),
-                // Explore Districts
-                _sectionHeader(
-                  title: AppStrings.exploreDistricts,
-                  onSeeAll: controller.navigateToAllDistricts,
-                ),
-                const SizedBox(height: 10),
-                Obx(() {
-                  if (controller.isLoadingDistricts.value) {
-                    return _shimmerGrid();
-                  }
-                  final list = controller.popularDistricts;
-                  if (list.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Center(
-                        child: Text('No districts found',
-                            style: AppTextStyle.bodyMedium),
-                      ),
-                    );
-                  }
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                      childAspectRatio: 0.93,
-                    ),
-                    itemCount: list.length,
-                    itemBuilder: (_, i) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: DistrictCard(
-                            district: list[i],
-                            onTap: () =>
-                                controller.navigateToDistrictPlaces(list[i]),
-                          ),
-                        ),
+              const SizedBox(height: 16),
 
-                        const SizedBox(height: 6),
-                        Obx(() => Container(
-                          decoration: BoxDecoration(
-                            //color: AppColor.primary.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            MyApp.isEnglish.value
-                                ? list[i].name
-                                : list[i].nameBn,
-                            style: TextStyle(fontSize: 16,color: AppColor.textPrimary),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )),
-                        const SizedBox(height: 10),
-                      ],
+              // Quick Actions
+              _sectionHeader(
+                title: 'Quick Actions',
+                showSeeAll: false,
+              ),
+
+              QuickActionsRow(controller: controller),
+              const SizedBox(height: 10),
+              // Explore Districts
+              _sectionHeader(
+                title: AppStrings.exploreDistricts,
+                onSeeAll: controller.navigateToAllDistricts,
+              ),
+              const SizedBox(height: 10),
+              Obx(() {
+                if (controller.isLoadingDistricts.value) {
+                  return _shimmerGrid();
+                }
+                final list = controller.popularDistricts;
+                if (list.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Center(
+                      child: Text('No districts found',
+                          style: AppTextStyle.bodyMedium),
                     ),
                   );
-                }),
+                }
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.93,
+                  ),
+                  itemCount: list.length,
+                  itemBuilder: (_, i) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: DistrictCard(
+                          district: list[i],
+                          onTap: () =>
+                              controller.navigateToDistrictPlaces(list[i]),
+                        ),
+                      ),
 
-                const SizedBox(height: 24),
-              ],
-            ),
+                      const SizedBox(height: 6),
+                      Obx(() => Container(
+                        decoration: BoxDecoration(
+                          //color: AppColor.primary.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          MyApp.isEnglish.value
+                              ? list[i].name
+                              : list[i].nameBn,
+                          style: TextStyle(fontSize: 16,color: AppColor.textPrimary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 24),
+            ],
           ),
         ),
       ),
@@ -135,7 +132,7 @@ class HomePage extends GetView<HomePageController> {
 
   Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Row(
         children: [
           // Location pill
@@ -144,8 +141,7 @@ class HomePage extends GetView<HomePageController> {
             return GestureDetector(
               onTap: controller.onLocationPillTap,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 constraints: const BoxConstraints(maxWidth: 160),
                 decoration: BoxDecoration(
                   color: AppColor.bgCard,
@@ -203,8 +199,7 @@ class HomePage extends GetView<HomePageController> {
               )),
           const SizedBox(width: 8),
           IconButton(
-            onPressed: () =>
-                controller.navigateToAllDistricts(autofocusSearch: true),
+            onPressed: () => controller.navigateToAllDistricts(autofocusSearch: true),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
             style: IconButton.styleFrom(

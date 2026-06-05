@@ -1,12 +1,77 @@
+import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
+import 'package:cholo_bd/core/routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cholo_bd/core/hiveCacheData/hive_cache_data.dart';
 import 'package:cholo_bd/config/app_colors.dart';
 import 'package:cholo_bd/config/app_text_style.dart';
 import 'package:cholo_bd/config/constant/constantText.dart';
-import 'package:cholo_bd/feature/onboarding/onboarding_controller.dart';
 
-class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
+class OnboardingStep5PreferencePage extends StatefulWidget {
   const OnboardingStep5PreferencePage({super.key});
+
+  @override
+  State<OnboardingStep5PreferencePage> createState() => _OnboardingStep5PreferencePageState();
+}
+
+class _OnboardingStep5PreferencePageState extends State<OnboardingStep5PreferencePage> {
+
+  final RxSet<String> preferredLocationTypes = <String>{}.obs;
+
+  static const List<LocationTypeOption> locationTypeOptions = [
+    LocationTypeOption(
+      label: 'Hill / Pahar',
+      icon: Icons.terrain_rounded,
+    ),
+    LocationTypeOption(
+      label: 'River / Nodi',
+      icon: Icons.waves_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Sea / Sagor',
+      icon: Icons.beach_access_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Park',
+      icon: Icons.park_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Historical Place',
+      icon: Icons.account_balance_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Forest',
+      icon: Icons.forest_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Waterfall',
+      icon: Icons.waterfall_chart_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Lake',
+      icon: Icons.pool_rounded,
+    ),
+    LocationTypeOption(
+      label: 'Museum',
+      icon: Icons.museum_rounded,
+    ),
+  ];
+
+
+  @override
+  void initState() {
+    final cached = getPreferredLocationTypes();
+    if (cached.isNotEmpty) preferredLocationTypes.addAll(cached);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +84,7 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
               top: 8,
               right: 16,
               child: TextButton(
-                onPressed: controller.skip,
+                onPressed: goToAuth,
                 child: Text(
                   AppStrings.skip,
                   style: AppTextStyle.labelMedium
@@ -33,7 +98,7 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                 Expanded(
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -45,7 +110,7 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                               height: 52,
                               decoration: BoxDecoration(
                                 color:
-                                    AppColor.primary.withValues(alpha: 0.15),
+                                AppColor.primary.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.tune_rounded,
@@ -53,34 +118,20 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('What places do you like?',
-                                      style: AppTextStyle.heading3),
-                                  const SizedBox(height: 2),
-                                  Text('পছন্দের জায়গা নির্বাচন করুন (একাধিক)',
-                                      style: AppTextStyle.bodySmall.copyWith(
-                                          color: AppColor.textSecondary)),
-                                ],
-                              ),
+                              child: Text('What places do you like?', style: AppTextStyle.heading3),
                             ),
                           ],
                         ),
                         const SizedBox(height: 18),
                         Expanded(
                           child: Obx(() {
-                            final selected =
-                                controller.preferredLocationTypes;
+                            final selected = preferredLocationTypes;
                             return SingleChildScrollView(
                               child: Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
-                                children: OnboardingController
-                                    .locationTypeOptions
-                                    .map((option) {
-                                  final isSelected =
-                                      selected.contains(option.label);
+                                children:locationTypeOptions.map((option) {
+                                  final isSelected = selected.contains(option.label);
                                   final iconColor = isSelected
                                       ? AppColor.inkDark
                                       : AppColor.primary;
@@ -142,15 +193,15 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(5, (i) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: i == 4 ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: i == 4 ? AppColor.primary : AppColor.border,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: i == 4 ? 24 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: i == 4 ? AppColor.primary : AppColor.border,
+                      borderRadius: BorderRadius.circular(4),
                     ),
+                  ),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -160,7 +211,7 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: controller.finishOnboarding,
+                      onPressed: finishOnboarding,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.primary,
                         shape: RoundedRectangleBorder(
@@ -179,4 +230,27 @@ class OnboardingStep5PreferencePage extends GetView<OnboardingController> {
       ),
     );
   }
+
+  Future<void> finishOnboarding() async {
+    await savePreferredLocationTypes(preferredLocationTypes.toList());
+    await goToAuth();
+  }
+
+  Future<void> goToAuth() async {
+    await saveOnboardingCompleted(true);
+    await saveIsFirstLaunch(false);
+    Get.offAllNamed(AppRoutes.auth);
+  }
+
+}
+
+
+class LocationTypeOption {
+  final String label;
+  final IconData icon;
+
+  const LocationTypeOption({
+    required this.label,
+    required this.icon,
+  });
 }
