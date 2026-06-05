@@ -34,8 +34,7 @@ class TripPlanningController extends GetxController {
   );
 
   LocationService get _location => Get.find<LocationService>();
-  GeminiTransportFilterService get _gemini =>
-      Get.find<GeminiTransportFilterService>();
+  GeminiTransportFilterService get _gemini => Get.find<GeminiTransportFilterService>();
   GoogleRoutesService get _routes => Get.find<GoogleRoutesService>();
 
   // Steps: 0=District, 1=Places, 2=DateTime, 3=Transport, 4=Confirm

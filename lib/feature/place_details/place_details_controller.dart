@@ -3,6 +3,7 @@ import 'package:cholo_bd/core/routes/routes.dart';
 import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 
 class PlaceDetailsController extends GetxController {
+
   late final PlaceModel place;
 
   final RxInt currentImageIndex = 0.obs;

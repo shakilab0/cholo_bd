@@ -8,7 +8,7 @@ import 'package:cholo_bd/feature/homepage/data/model/place_model.dart';
 import 'package:cholo_bd/feature/place_details/place_details_controller.dart';
 import 'package:cholo_bd/feature/place_details/widgets/place_video_player_sheet.dart';
 
-/// Hero image carousel for the place details app bar.
+
 class PlaceDetailsImageCarousel extends StatelessWidget {
   final PlaceModel place;
   final PlaceDetailsController controller;

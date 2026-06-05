@@ -155,8 +155,7 @@ class PlaceDetailsPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.fromLTRB(
-            20, 12, 20, 12 + MediaQuery.of(context).padding.bottom),
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 12 + MediaQuery.of(context).padding.bottom),
         decoration: const BoxDecoration(
           color: AppColor.bgCard,
           border: Border(top: BorderSide(color: AppColor.border)),
